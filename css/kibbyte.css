@@ -1,0 +1,260 @@
+html,
+body {
+	height: 100%;
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', sans-serif;
+	background: #263238;
+	overflow-x: hidden;
+}
+/*col-medteal 009688*/
+/*col-darkteal 00796B*/
+/*col-lightteal 1DE96B*/
+/*col-medgray 607D8B*/
+/*col-darkgray 455A64*/
+/*col-darkestgray 263238*/
+
+/*col-darkgray #263238*/
+.drag-target {
+	display: none;
+}
+::-webkit-scrollbar {
+	width: 15px;
+}
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+	background: #243135;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #1DE9B6;
+	outline: 1px solid #009688;
+}
+::selection {
+	color: #00796B;
+	background: #1de986;
+}
+header {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	height: 64px;
+	background: #455A64;
+	z-index: 10;
+}
+main {
+	position: relative;
+	height: calc(100% - (64px + 20px)); 
+}
+footer {
+	height: 20px;
+	background: #455A64;
+	z-index: 10;
+}
+nav {
+	background: transparent;
+	z-index: 9;
+}
+.nav {
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+.btn-burger {
+	position: relative;
+	float: left;
+	background: transparent;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	padding: 2px 0 0 0;
+	text-align: center;
+	margin: 12px;
+}
+.btn-burger:hover {
+	background: #1DE9B6;
+	color: #455A64;
+}
+.btn-burger i {
+	font-size: 25px;
+}
+.title {
+	position: relative;
+	float: left;
+	width: 200px;
+	height: 100%;
+}
+.title a {
+	position: absolute;
+	top:0;bottom:0;margin:auto;
+	height: 34px;
+	font-size: 1.5em;
+	color: white;
+}
+footer .info {
+	color: rgba(255,255,255,.6);
+	padding: 0 10px;
+	margin: 0;
+	font-size: 0.9em;
+	position: relative;
+}
+footer .info .position-info,
+footer .info .editor-info {
+	height: 20px;
+	position: relative;
+	float: left;
+}
+footer .info .editor-info span:not(#value) {
+	padding: 0 20px;
+}
+.nav-left {
+	position: absolute;
+	width: 240px;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+.nav-left li {
+	padding: 15px;
+	width: 100%;
+	text-align: left;
+	height: 50px;
+	color: rgba(255,255,255,.6);
+	border-radius: 0;
+}
+.nav-left li:hover {
+	/*background: #1DE9B6;
+	color: #455A64;*/
+	/*background: rgba(255,255,255,.1);*/
+	background: transparent;
+	color: white;
+}
+.nav-left li a {
+	position: absolute;
+	top:0;bottom:0;margin:auto;
+	height: 34px;
+	font-size: 0.9em;
+	color: inherit;
+	text-transform: none;
+}
+.nav-right {
+	background: #455A64;
+}
+.nav-right li {
+	padding: 2px 0 0 0;
+}
+.nav-right a {
+	padding: 0;
+}
+.btn-account-menu {
+	background: transparent;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	text-align: center;
+	margin: 12px 12px 0 12px;
+}
+.btn-account-menu-img {
+	padding: 0 !important;
+	background: transparent !important;
+}
+.nav-right li:hover {
+	background: #1DE9B6;
+	color: #455A64;
+}
+.content-main {
+	position: absolute;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	left: 240px;
+	width: calc(100% - 240px);
+	text-overflow: ellipsis;
+}
+.quickmenu {
+	height: 100%;
+	width: auto;
+	position: relative;
+	margin: 0;
+}
+.quickmenu li {
+	/*line-height: 64px;
+	vertical-align: middle;
+	height: 100%;
+	padding: 0 20px;
+	color: white;*/
+	position: relative;
+	float: left;
+}
+.btn-header-menu {
+	background: transparent;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	padding: 2px 0 0 0;
+	text-align: center;
+	margin: 12px 12px 12px 0;
+}
+.btn-header-menu-img {
+	padding: 0;
+}
+.btn-header-menu:hover {
+	background: #1DE9B6;
+	color: #455A64;
+}
+.btn-header-menu-img:hover {
+	background: transparent;
+}
+.btn-header-menu i {
+	font-size: 25px;
+}
+.btn img {
+	height: 100%;
+	width: 100%;
+}
+.input-field i {
+	height: 64px;
+	line-height: 64px;
+	display: block;
+	font-size: 2rem;
+}
+.input-field #search {
+	margin: 0;
+}
+.input-field #search:focus {
+	background: #1DE9B6;
+	color: #455A64;
+}
+.actions {
+	margin: 12px 0;
+	padding: 0;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	/*position: relative;
+	float: left;*/
+	position: absolute;
+	left: 240px;
+}
+.actions li {
+	float: left;
+	font-size: 0.9em;
+	height: 100%;
+	padding: 2px 10px;
+	color: rgba(255,255,255,.6);
+	border-radius: 0;
+	text-transform: none;
+}
+.actions li:hover {
+	color: white;
+	/*background: rgba(255,255,255,.05);*/
+}
+.editor,
+.CodeMirror {
+	height: 100%;
+	width: 100%;
+}

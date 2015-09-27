@@ -1,7 +1,7 @@
-ErrorDocument 404 /kibble/error.php?404
-ErrorDocument 500 /kibble/error.php?500
-ErrorDocument 403 /kibble/error.php?403
-ErrorDocument 502 /kibble/error.php?502
+ErrorDocument 404 /kibbyte/error.php?404
+ErrorDocument 500 /kibbyte/error.php?500
+ErrorDocument 403 /kibbyte/error.php?403
+ErrorDocument 502 /kibbyte/error.php?502
 
 #Clean URLs
 <IfModule mod_rewrite.c>

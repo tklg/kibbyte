@@ -5,6 +5,8 @@ session_start();
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="css/kibbyte.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css"> -->
 <style type="text/css">
 	html, body {
 		height: 100%;
@@ -12,11 +14,12 @@ session_start();
 		margin: 0;
 		padding: 0;
 		font-family: sans-serif;
-		background: #628fce;
+		background: #263238;
 	}
-    :selection {
-        background: #2b65ec;  
-    }
+    ::selection {
+	color: #00796B;
+	background: #1de986;
+}
 	.wrapper {
 		height: 370px;
 		width: 320px;
@@ -35,6 +38,15 @@ session_start();
 		margin-bottom: 30px;
 /*        background: red*/
 	}
+	.inputbar-half {
+        width: 48%;
+    }
+    .inputbar-half:nth-child(odd) {
+        float: right;
+    }
+    .inputbar-half:nth-child(even) {
+        float: left;
+    }
 	.userlabel {
 		color: white;
 	}
@@ -68,7 +80,7 @@ session_start();
 		height: 2px;
 		width: 0;
 		left: 50%;
-		background: #2b65ec;
+		background: #1DE9B6;
 		-webkit-transition: all .3s ease-in-out;
         transition: all .3s ease;
 	}
@@ -81,7 +93,7 @@ session_start();
 		top: -14px;
 		left: 0;
 		font-size: 70%;
-        color: #2b65ec;
+        color: #1DE9B6;
 	}
 	.nosel {
 		-webkit-touch-callout: none;
@@ -104,7 +116,7 @@ session_start();
         display: none;
     }
     .btn {
-        background: #2b65ec;
+        background: #1DE9B6;
         padding: 12px 0;
         border: none;
         outline: 0 none;
@@ -117,14 +129,14 @@ session_start();
     }
     .btn:hover,
     .btn:focus {
-        background: #517ee8;  
+        background: #009688;  
     }
     .nomargin {
         margin: 0;
     }
     a {
         text-decoration: none;
-        color: #2b65ec;
+        color: #1DE9B6;
         -webkit-transition: all .3s ease-in-out;
         transition: all .3s ease;
     }
@@ -137,6 +149,9 @@ session_start();
     }
     .inputbar a:last-of-type {
         float: right;
+    }
+    .nointeract {
+    	z-index: -1;
     }
 </style>
     <title>Title - Login</title>
@@ -159,10 +174,14 @@ session_start();
 				<div class="input-underline"></div>
 			</label>
 		</div>
-        <section class="inputbar nosel nomargin">
-            <button class="btn btn-submit" type="submit">Sign In</button>
+        <section class="inputbar inputbar-half nosel nomargin">
+            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit" onclick="window.location = 'oauth.php'; return false">Sign in with Google</button>
         </section>
-        <div class="inputbar">
+        <section class="inputbar inputbar-half nosel nomargin">
+            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit">Sign In</button>
+        </section>
+        <div class="inputbar nomargin nointeract"></div>
+        <div class="inputbar nomargin">
             <a href="register">Create an Account</a>
             <a href="recover">Forgot Password</a>
         </div>
@@ -170,6 +189,7 @@ session_start();
 	</section>
 </section>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function() {
         var user = $('#username').val();

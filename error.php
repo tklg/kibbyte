@@ -1,14 +1,8 @@
-<?php
-session_start();
-require ('includes/config.php');
-//error_reporting(0);//remove for debug
-?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">   
+    <!-- change this into a html page that uses js to read the querystring -->
   <head>
-    <title><?php echo $title ?></title>
-    <?php //require('includes/header.php'); ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
     <style type="text/css">
     html, body {
     	height: 100%;
@@ -18,21 +12,33 @@ require ('includes/config.php');
     	color: #ccc;
 		font-family: sans-serif;
 		-webkit-font-smoothing: antialiased;
-		background: #1a1a1a;
+		background: #263238;
 		overflow: hidden;
     }
     a {
 		text-decoration: none;
-		color: #80069D
+		color: #1DE96B
 		-webkit-transition: all .1s ease-in-out;
 	            transition: all .1s ease-in-out;
 	}
 	a:hover {
 		color: #ccc;
 	}
-	::selection {
-		background: #4A043D;
-	}
+	::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background: #243135;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #1DE9B6;
+    outline: 1px solid #009688;
+}
+::selection {
+    color: #00796B;
+    background: #1de986;
+}
     #wrapper {
     	height: 50%;
     	width: 50%;
@@ -47,7 +53,7 @@ require ('includes/config.php');
     	/*font-family: 'quicksandlight', sans-serif;*/
     }
     .errornumber::first-letter {
-    	color: #80069D;
+    	color: #1DE96B;
     }
     .errordesc {
     	margin: 0;
@@ -58,21 +64,21 @@ input:focus,
 button:active,
 button:focus {
     outline: 0 none;
-    border-bottom: 1px solid #80069D;
+    border-bottom: 1px solid #1DE96B;
 }
 .btn:hover {
-    background: #80069D;
+    background: #1DE96B;
 }
 .btn {
     cursor: pointer;
     border-radius: 6px;
     -webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
-    padding: 11px 20px;  
+    /*padding: 11px 20px;  */
     margin: 0 4px;
 /*    background: rgba(255,255,255,.1);*/
     background: transparent;
-    border: 1px solid #80069D;
+    border: 1px solid #1DE96B;
     color: #ccc;
 }
     </style>
@@ -113,7 +119,7 @@ button:focus {
 	if(isset($_GET['500'])) echo 'var code = 500;';
 	if(isset($_GET['403'])) echo 'var code = 403;';
 	?>
-    document.title = 'Error ' + code;
+    document.title = 'Kibbyte - Error ' + code;
     </script>
 </body>
 </html>

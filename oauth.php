@@ -6,14 +6,20 @@ $client = new Google_Client();
 $client->setAuthConfigFile('includes/OAuth2/client_secret.json');
 //$client->addScope("https://www.googleapis.com/auth/plus.login"); //openid profile email
 $client->addScope("openid profile email");
-$client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/kibble/oauth.php');
+$client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/kibbyte/oauth.php');
 
 if (isset($_GET['error'])) {
 	echo 'error: ' . $_GET['error'];
 	die();
 }
 if (isset($_GET['code'])) {
-	$client->authenticate($_GET['code']);
+	try {
+		$client->authenticate($_GET['code']);
+	} catch (Exception $e) {
+		echo 'Authentication Failed: ' . $e;
+		header("Location: http://" . $_SERVER['HTTP_HOST'] . "/kibbyte/oauth.php");
+		die();
+	}
 	$access_token = $client->getAccessToken();
 	$_SESSION['access_token'] = $access_token;
 	
@@ -32,11 +38,16 @@ if (isset($_GET['code'])) {
 	$_SESSION['user_email'] = $userinfo['email'];
 	$_SESSION['user_picture'] = $userinfo['picture'];
 	$_SESSION['user_locale'] = $userinfo['locale'];
-	header("Location: http://" . $_SERVER['HTTP_HOST'] . "/kibble");
+	header("Location: http://" . $_SERVER['HTTP_HOST'] . "/kibbyte");
 	die();
 }
 if (isset($_GET['revoke'])) {
 	$client->revokeToken();
+	foreach ($_SESSION as $val) {
+		$val = null;
+	}
+	session_destroy();
+	header("Location: http://" . $_SERVER['HTTP_HOST'] . "/kibbyte");
 	die();
 }
 
