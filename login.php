@@ -22,12 +22,12 @@ session_start();
 }
 	.wrapper {
 		height: 370px;
-		width: 320px;
+		width: 360px;
 		position: absolute;
 		top:0;bottom:0;right:0;left:0;margin:auto;
     }
 	.content {
-		width: 320px;
+		width: 100%;
 		top:0;bottom:0;right:0;left:0;margin:auto;
 		position: absolute;
 	}
@@ -80,7 +80,7 @@ session_start();
 		height: 2px;
 		width: 0;
 		left: 50%;
-		background: #1DE9B6;
+		background: #1DE96B;
 		-webkit-transition: all .3s ease-in-out;
         transition: all .3s ease;
 	}
@@ -93,7 +93,7 @@ session_start();
 		top: -14px;
 		left: 0;
 		font-size: 70%;
-        color: #1DE9B6;
+        color: #1DE96B;
 	}
 	.nosel {
 		-webkit-touch-callout: none;
@@ -104,7 +104,7 @@ session_start();
 	    user-select: none;
 	}
     .title {
-        color: white;
+        color:  #1DE96B;
         font-size: 200%;
         position: relative;
         width: 100%;
@@ -116,7 +116,7 @@ session_start();
         display: none;
     }
     .btn {
-        background: #1DE9B6;
+        background: #1DE96B;
         padding: 12px 0;
         border: none;
         outline: 0 none;
@@ -136,7 +136,7 @@ session_start();
     }
     a {
         text-decoration: none;
-        color: #1DE9B6;
+        color: #1DE96B;
         -webkit-transition: all .3s ease-in-out;
         transition: all .3s ease;
     }

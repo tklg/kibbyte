@@ -1,0 +1,116 @@
+.cm-s-kibbyte-mint.CodeMirror {
+    background: #1D2529;
+    color: #CFD8DC;
+}
+.cm-s-kibbyte-mint .CodeMirror-selected {
+    background: rgba(180,200,255,.08);
+}
+.cm-s-kibbyte-mint.CodeMirror::selection {
+    background: rgba(180,200,255,.08);
+}
+.cm-s-kibbyte-mint.CodeMirror::-moz-selection {
+    background: rgba(180,200,255,.08);
+}
+.cm-s-kibbyte-mint .CodeMirror-gutters {
+    background: #263238;
+    border-right: 1px solid #1DE96B;
+}
+.cm-s-kibbyte-mint .CodeMirror-guttermarker {
+    color: rgba(255,255,255,.6);
+}
+.cm-s-kibbyte-mint .CodeMirror-guttermarker-subtle {
+    color: rgba(255,255,255,.4);
+}
+.cm-s-kibbyte-mint .CodeMirror-linenumber {
+    color: rgba(255,255,255,.4);
+}
+.cm-s-kibbyte-mint .CodeMirror-cursor {
+    border-left: 1px solid white !important;
+}
+.cm-s-kibbyte-mint .cm-keyword {
+    color: #1DE96B;
+}
+.cm-s-kibbyte-mint .cm-atom {
+    color: #00BCD4;
+}
+.cm-s-kibbyte-mint .cm-number {
+    color: #4DD0E1;
+}
+.cm-s-kibbyte-mint .cm-def {
+    color: #8DA6CE;
+}
+.cm-s-kibbyte-mint span.cm-variable-2,
+.cm-s-kibbyte-mint span.cm-tag {
+    color: #90A4AE;
+}
+.cm-s-kibbyte-mint span.cm-variable-3,
+.cm-s-kibbyte-mint span.cm-def {
+    color: #90A4AE;
+}
+.cm-s-kibbyte-mint .cm-operator {
+    color: #009688;
+}
+.cm-s-kibbyte-mint .cm-comment {
+    color: #455A64;
+    font-style: italic;
+    font-weight: normal;
+}
+.cm-s-kibbyte-mint .cm-string {
+    color: #689F38;
+    font-style: italic;
+}
+.cm-s-kibbyte-mint .cm-string-2 {
+    color: #66BB6A;
+}
+.cm-s-kibbyte-mint .cm-meta {
+    background-color: #141414;
+    color: #f7f7f7;
+}
+.cm-s-kibbyte-mint .cm-builtin {
+    color: #00ACC1;
+}
+.cm-s-kibbyte-mint .cm-tag {
+    color: #997643;
+}
+.cm-s-kibbyte-mint .cm-attribute {
+    color: #4DB6AC;
+}
+.cm-s-kibbyte-mint .cm-header {
+    color: #02DBAA;
+}
+.cm-s-kibbyte-mint .cm-hr {
+    color: #AEAEAE;
+}
+.cm-s-kibbyte-mint .cm-link {
+    color: #4DB6AC;
+    font-style: italic;
+    text-decoration: none;
+}
+.cm-s-kibbyte-mint .cm-searching {
+	background: #4DB6AC;
+}
+.cm-s-kibbyte-mint .cm-error {
+    border-bottom: 1px solid red;
+}
+.cm-s-kibbyte-mint .CodeMirror-activeline-background {
+    background: #2D3940 !important;
+}
+.cm-s-kibbyte-mint .CodeMirror-matchingbracket {
+    outline: 1px solid grey;
+    color: white !important;
+}
+.CodeMirror-hints {
+    background-color: #263238;
+    border-radius: 0;
+    border: none;
+}
+.CodeMirror-hint {
+    background-color: #263238;
+    color: rgba(255,255,255,.6);
+    border: none;
+    border-radius: 0;
+}
+.CodeMirror-hint-active {
+    background-color: #1DE96B;
+    color: #263238;
+}

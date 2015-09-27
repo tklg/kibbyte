@@ -28,15 +28,15 @@ $username = $_SESSION['user_name'];
 <body>
 <header>
 	<section class="nav z-depth-1">
-	    <a id="btn-burger" class="btn btn-burger btn-flat waves-effect waves-circle waves-light"><i class="material-icons">menu</i></a>
+	    <a id="btn-burger" data-toggle="file-bar" class="btn btn-burger btn-flat waves-effect waves-circle waves-light"><i class="material-icons">menu</i></a>
 	    <div class="title"><a>Kibbyte</a></div>
 	    <ul class="actions">
-		    <li class="btn-flat waves-effect waves-light">File</li>
-		    <li class="btn-flat waves-effect waves-light">Edit</li>
-		    <li class="btn-flat waves-effect waves-light">Insert</li>
-		    <li class="btn-flat waves-effect waves-light">Format</li>
-		    <li class="btn-flat waves-effect waves-light">Tools</li>
-		    <li class="btn-flat waves-effect waves-light">Help</li>
+		    <li class="btn-flat">File</li>
+		    <li class="btn-flat">Edit</li>
+		    <li class="btn-flat">Insert</li>
+		    <li class="btn-flat">Format</li>
+		    <li class="btn-flat">Tools</li>
+		    <li class="btn-flat">Help</li>
 	    </ul>
 	    <ul class="right quickmenu">		    
 		    <a href="#" data-activates="account-bar" class="button-account-bar show-on-large"><li class="btn btn-flat btn-header-menu btn-header-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li></a>
@@ -63,6 +63,9 @@ $username = $_SESSION['user_name'];
 		<a href="#"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">settings</i></li></a>
 		<a href="oauth.php?revoke" title="logout"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">power_settings_new</i></li></a>
 	</ul>
+	<section class="editor-tabs">
+
+	</section>
 	<section class="content-main">
 		<textarea class="editor" id="editor-1"></textarea>
 	</section>
@@ -71,10 +74,10 @@ $username = $_SESSION['user_name'];
 	<div class="info">
 		<div class="position-info">
 			<span class="line-number">
-				Line <span id="value">72</span>
+				Line <span id="value">0</span>
 			</span>,
 			<span class="column-number">
-				Column <span id="value">33</span>
+				Column <span id="value">0</span>
 			</span>
 			<span class="random-info">
 				<span id="value"></span>
@@ -85,7 +88,7 @@ $username = $_SESSION['user_name'];
 				Tab Size: <span id="value">4</span>
 			</span>
 			<span class="editor-language">
-				<span id="value">Javascript</span>
+				<span id="value">Plain Text</span>
 			</span>
 		</div>
 	</div>
@@ -99,22 +102,31 @@ $username = $_SESSION['user_name'];
     <script src="js/underscore.min.js"></script>
     <script src="js/backbone.min.js"></script>
     <script src="js/codemirror.js"></script>
-    <link rel="stylesheet" href="css/cm-themes/cm-kibbyte.css">
+    <script src="js/minimap.js"></script>
+    <script src="js/kibbyte.js"></script>
+
+    <link rel="stylesheet" href="css/cm-themes/kibbyte-mint.css">
     <script type="text/javascript" src="js/codemirror.js"></script>
     <script src="js/cm-keymap/sublime.js"></script>
-    <script type="text/javascript" src="js/cm-addon/dialog/dialog.js"></script>
+    <script src="js/cm-addon/dialog/dialog.js"></script>
     <link href="js/cm-addon/dialog/dialog.css" rel="stylesheet" />
-    <script type="text/javascript" src="js/cm-addon/search/searchcursor.js"></script>
-    <script type="text/javascript" src="js/cm-addon/search/search.js"></script>
-    <script type="text/javascript" src="js/cm-addon/edit/closebrackets.js"></script>
-    <script type="text/javascript" src="js/cm-addon/comment/comment.js"></script>
-    <script type="text/javascript" src="js/cm-addon/fold/foldcode.js"></script>
-    <script type="text/javascript" src="js/cm-addon/fold/foldgutter.js"></script>
+    <script src="js/cm-addon/search/searchcursor.js"></script>
+    <script src="js/cm-addon/search/search.js"></script>
+    <script src="js/cm-addon/edit/closebrackets.js"></script>
+    <script src="js/cm-addon/comment/comment.js"></script>
+    <script src="js/cm-addon/fold/foldcode.js"></script>
+    <script src="js/cm-addon/fold/foldgutter.js"></script>
+    <link href="js/cm-addon/fold/foldgutter.css" rel="stylesheet" />
     <script src="js/cm-addon/fold/brace-fold.js"></script>
     <script src="js/cm-addon/fold/xml-fold.js"></script>
     <script src="js/cm-addon/fold/markdown-fold.js"></script>
     <script src="js/cm-addon/fold/comment-fold.js"></script>
-    <link href="js/cm-addon/fold/foldgutter.css" rel="stylesheet" />
+    <!--<script src="js/cm-addon/selection/active-line.js"></script>-->
+    <!--<script src="js/cm-addon/hint/show-hint.js"></script>
+    <script src="js/cm-addon/hint/anyword-hint.js"></script>
+    <link href="js/cm-addon/hint/show-hint.css" rel="stylesheet" />-->
+    <!--<script src="js/cm-addon/merge/merge.js"></script>
+    <link href="js/cm-addon/merge/merge.css" rel="stylesheet" />-->
     <!--<script src="js/cm-mode/xml/xml.js"></script>
     <script src="js/cm-mode/css/css.js"></script>
     <script src="js/cm-mode/htmlmixed/htmlmixed.js"></script>
@@ -135,14 +147,18 @@ $username = $_SESSION['user_name'];
 	      edge: 'right',
 	      closeOnClick: true
 	    });
+	    //var miniMapControl = new MiniMap();
 	    editor = CodeMirror.fromTextArea($('#editor-1')[0], {
 			lineNumbers: true,
 			lineWrapping: false,
-			theme: 'kibbyte',
+			theme: 'kibbyte-mint',
+			indentUnit: 4,
 			indentWithTabs: true,
+			tabSize: 4,
 			readOnly: false,
 			keyMap: 'sublime',
 		    foldGutter: true,
+		    styleLineActive: true,
 		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		    extraKeys: {
     			"Ctrl-S": function(instance) {/* codemir.savecontent(instance.getValue());*/ }
@@ -155,11 +171,21 @@ $username = $_SESSION['user_name'];
 			//codemirrorActive = false;
 			//codemir.savecontent();
 		});
-		editor.on('change', function() {
-			/*if (codemir.saved) {
-				codemir.saved = false;
-				$('.cm-save-status i').attr('class', 'fa fa-save');
-			}*/
+		editor.on('change', function(instance, object) {
+			//miniMapControl.mirrorContent();
+			//instance.showHint({hint: CodeMirror.hint.anyword});
+			// if (codemir.saved) {
+			// 	codemir.saved = false;
+			// 	$('.cm-save-status i').attr('class', 'fa fa-save');
+			// }
+		});
+		/*editor.on('keyup', function(instance, event) {
+			editor.showHint(instance);
+		});*/
+		editor.on('cursorActivity', function(instance) {
+			var object = instance.getCursor();
+			$('.info .line-number #value').text(object.line + 1);
+			$('.info .column-number #value').text(object.ch + 1);
 		});
 		/*if (mode != null && mode != '') {
 			//d.info("Loading mode: " + mode);
@@ -175,7 +201,7 @@ $username = $_SESSION['user_name'];
 			});
 		}*/
 		editor.setOption("mode", "javascript");
-		console.log("a");
+
 		$.get("js/codemirror.js", function (data) {
             editor.setValue(data);
         }).fail(function(data) {
