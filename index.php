@@ -29,10 +29,11 @@ $username = $_SESSION['user_name'];
 <header>
 	<section class="nav z-depth-1">
 	    <a id="btn-burger" data-toggle="file-bar" class="btn btn-burger btn-flat waves-effect waves-circle waves-light"><i class="material-icons">menu</i></a>
-	    <div class="title"><a>Kibbyte</a></div>
-	    <ul class="actions">
+	    <div class="title noselect"><a>Kibbyte</a></div>
+	    <ul class="actions noselect">
 		    <li class="btn-flat">File</li>
 		    <li class="btn-flat">Edit</li>
+		    <li class="btn-flat">View</li>
 		    <li class="btn-flat">Insert</li>
 		    <li class="btn-flat">Format</li>
 		    <li class="btn-flat">Tools</li>
@@ -52,32 +53,58 @@ $username = $_SESSION['user_name'];
 	          	<i class="material-icons">close</i>
 	        </div>
 	    </form>
-	    <ul>
-		    <li class="btn-flat waves-effect waves-light"><a href="#"><i class="material-icons">folder</i> First Sidebar Link</a></li>
-		    <li class="btn-flat waves-effect waves-light"><a href="#"><i class="material-icons">folder</i> Second Sidebar Link</a></li>
+	    <ul class="noselect">
+		    <li class="btn-flat waves-effect waves-light"><a href="#"><i class="material-icons">folder_open</i>First Sidebar Link</a></li>
+		    <ul class="filemanager-sub" level="1">
+		    	<li class="btn-flat"><a href="#"><i class="material-icons">folder_open</i>First Sub Link</a></li>
+		    	<ul class="filemanager-sub" level="2">
+			    	<li class="btn-flat file-active"><a href="#"><i class="material-icons">code</i>First Sub Link</a></li>
+			    	<li class="btn-flat"><a href="#"><i class="material-icons">format_align_left</i>Second Sub Link</a></li>
+			    </ul>
+		    	<li class="btn-flat"><a href="#"><i class="material-icons">folder</i>Second Sub Link</a></li>
+		    </ul>
+		    <li class="btn-flat"><a href="#"><i class="material-icons">folder</i>Second Sidebar Link</a></li>
 	    </ul>
   	</nav>
-  	<ul id="account-bar" class="side-nav nav-right">
+  	<ul id="account-bar" class="side-nav nav-right z-depth-2">
 		<li class="btn btn-flat btn-account-menu btn-account-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li>
 	    <a href="#"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">info_outline</i></li></a>
 		<a href="#"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">settings</i></li></a>
-		<a href="oauth.php?revoke" title="logout"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">power_settings_new</i></li></a>
+		<a href="oauth.php?logout" title="logout"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">power_settings_new</i></li></a>
 	</ul>
-	<section class="editor-tabs">
-
-	</section>
 	<section class="content-main">
-		<textarea class="editor" id="editor-1"></textarea>
+		<section class="editor-tabs noselect">
+			<section class="editor-tabs-container">
+				<!-- <div class="tab tab-active">CodeMirror.js<div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status" saved="false">save</i></div></div>-->
+			</section>
+			<div class="tab tab-action right"><a data-toggle="live-preview" class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">visibility</i></a></div>
+			<div class="tab tab-action right"><a class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">menu</i></a></div>
+		</section>
+		<section class="editors">
+			<textarea class="editor" id="editor-1"></textarea>
+		</section>
+		<section class="live-preview">
+			<div class="live-preview-paper z-depth-2">
+				The quick brown fox jumps over the lazy dog.
+			</div>
+			<div class="live-preview-warning z-depth-2">
+				Some error, maybe
+			</div>
+		</section>
 	</section>
 </main>
-<footer class="z-depth-2">
+<footer>
 	<div class="info">
 		<div class="position-info">
+			<span class="net-state">
+				<span id="icon"><i class="material-icons">brightness_1</i></span>
+				<span id="value">Connected</span>
+			</span>
 			<span class="line-number">
-				Line <span id="value">0</span>
-			</span>,
+				Line <span id="value">1</span>,
+			</span>
 			<span class="column-number">
-				Column <span id="value">0</span>
+				Column <span id="value">1</span>
 			</span>
 			<span class="random-info">
 				<span id="value"></span>
@@ -93,16 +120,21 @@ $username = $_SESSION['user_name'];
 		</div>
 	</div>
 </footer>
-</body>
+<script type="text/template" id="template_tab">
+<div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light" onclick="editors.close(<%= tabId %>)"><i class="material-icons editor-tab-status">clear</i></div></div>
 </script>
+</body>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
 	<script src="js/jquery.nicescroll.js"></script>
     <script src="js/underscore.min.js"></script>
-    <script src="js/backbone.min.js"></script>
+    <!--<script src="js/backbone.min.js"></script>-->
     <script src="js/codemirror.js"></script>
-    <script src="js/minimap.js"></script>
+    <!--<script src="js/minimap.js"></script>-->
+    <script src="js/offline.min.js"></script>
     <script src="js/kibbyte.js"></script>
 
     <link rel="stylesheet" href="css/cm-themes/kibbyte-mint.css">
@@ -136,6 +168,9 @@ $username = $_SESSION['user_name'];
     var editor;
     var res;
     $(document).ready(function() {
+    	init.fileBar();
+    	init.tabs();
+    	init.editor();
 	    /*$("html").niceScroll({ 
 	    	scrollspeed: 80,
 	    	mousescrollstep: 60,
@@ -148,67 +183,9 @@ $username = $_SESSION['user_name'];
 	      closeOnClick: true
 	    });
 	    //var miniMapControl = new MiniMap();
-	    editor = CodeMirror.fromTextArea($('#editor-1')[0], {
-			lineNumbers: true,
-			lineWrapping: false,
-			theme: 'kibbyte-mint',
-			indentUnit: 4,
-			indentWithTabs: true,
-			tabSize: 4,
-			readOnly: false,
-			keyMap: 'sublime',
-		    foldGutter: true,
-		    styleLineActive: true,
-		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-		    extraKeys: {
-    			"Ctrl-S": function(instance) {/* codemir.savecontent(instance.getValue());*/ }
-    		}
-		});
-		editor.on('focus', function() {
-			//codemirrorActive = true;
-		});
-		editor.on('blur', function() {
-			//codemirrorActive = false;
-			//codemir.savecontent();
-		});
-		editor.on('change', function(instance, object) {
-			//miniMapControl.mirrorContent();
-			//instance.showHint({hint: CodeMirror.hint.anyword});
-			// if (codemir.saved) {
-			// 	codemir.saved = false;
-			// 	$('.cm-save-status i').attr('class', 'fa fa-save');
-			// }
-		});
-		/*editor.on('keyup', function(instance, event) {
-			editor.showHint(instance);
-		});*/
-		editor.on('cursorActivity', function(instance) {
-			var object = instance.getCursor();
-			$('.info .line-number #value').text(object.line + 1);
-			$('.info .column-number #value').text(object.ch + 1);
-		});
-		/*if (mode != null && mode != '') {
-			//d.info("Loading mode: " + mode);
-			$.getScript('js/cm-mode/'+mode+'/'+mode+'.js', function() {
-				if (mime != null && mime != '') {
-					//d.info("Setting mode to " + mime + '<br>js/cm-mode/'+mode+'/'+mode+'.js');
-					editor.setOption("mode", mime);
-				} else {
-					//d.info("Setting mode to " + mode + '<br>js/cm-mode/'+mode+'/'+mode+'.js');
-					editor.setOption("mode", mode);
-				}
-		   		//d.info("Initialized CodeMirror");
-			});
-		}*/
-		editor.setOption("mode", "javascript");
-
-		$.get("js/codemirror.js", function (data) {
-            editor.setValue(data);
-        }).fail(function(data) {
-		    editor.setValue(data);
-		  });
+	    test.tabs();
+	    test.editors();
     });
-
     </script>
 	
 	<script>

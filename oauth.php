@@ -5,8 +5,11 @@ require_once 'includes/OAuth2/Google/autoload.php';
 $client = new Google_Client();
 $client->setAuthConfigFile('includes/OAuth2/client_secret.json');
 //$client->addScope("https://www.googleapis.com/auth/plus.login"); //openid profile email
+$client->setAccessType('online');
+$client->setApprovalPrompt('auto') ;
 $client->addScope("openid profile email");
 $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/kibbyte/oauth.php');
+if (isset($_SESSION['access_token'])) $client->setAccessToken($_SESSION['access_token']);
 
 if (isset($_GET['error'])) {
 	echo 'error: ' . $_GET['error'];
@@ -43,6 +46,8 @@ if (isset($_GET['code'])) {
 }
 if (isset($_GET['revoke'])) {
 	$client->revokeToken();
+}
+if (isset($_GET['logout'])) {
 	foreach ($_SESSION as $val) {
 		$val = null;
 	}

@@ -36,6 +36,14 @@ body {
 	color: #00796B;
 	background: #1de986;
 }
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 header {
 	position: relative;
 	margin: 0;
@@ -47,15 +55,17 @@ header {
 main {
 	position: relative;
 	height: calc(100% - (64px + 20px)); 
+	/*z-index: 9;*/
 }
 footer {
 	height: 20px;
 	background: #455A64;
-	z-index: 10;
+	/*z-index: 50;*/
+	box-shadow: 2px -3px 5px 0 rgba(0,0,0,.16), 
+    			2px -3px 10px 0 rgba(0,0,0,.12) !important;
 }
 nav {
 	background: transparent;
-	z-index: 9;
 }
 .nav {
 	padding: 0;
@@ -109,12 +119,14 @@ nav {
 	top: 50%;
 	height: 32px;
 	line-height: 32px;
+	white-space: nowrap;
+	overflow: hidden;
 }
 .actions li {
 	float: left;
 	font-size: 0.9em;
-	height: 100%
-;	padding: 0 10px;
+	height: 100%;
+	padding: 0 10px;
 	color: rgba(255,255,255,.6);
 	border-radius: 0;
 	text-transform: none;
@@ -141,22 +153,24 @@ footer .info .editor-info span:not(#value) {
 }
 .nav-left {
 	position: absolute;
+	top: 0;
 	width: 240px;
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	z-index: 9;
 	-webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
 }
 .nav-left li {
-	padding: 15px;
+	padding: 0;
 	width: 100%;
 	text-align: left;
-	height: 50px;
+	height: 24px;
 	color: rgba(255,255,255,.6);
 	border-radius: 0;
 }
-.nav-left li:hover {
+.nav-left li:hover:not(.file-active) {
 	/*background: #1DE96B;
 	color: #455A64;*/
 	/*background: rgba(255,255,255,.1);*/
@@ -164,15 +178,41 @@ footer .info .editor-info span:not(#value) {
 	color: white;
 }
 .nav-left li a {
-	position: absolute;
-	top:0;bottom:0;margin:auto;
-	height: 34px;
-	font-size: 0.9em;
+	padding: 0 12px;
+	/*position: absolute;
+	top:0;bottom:0;margin:auto;*/
+	height: 24px;
+	width: 100%;
+	font-size: 9.5pt;
 	color: inherit;
 	text-transform: none;
+	line-height: 24px;
+	vertical-align: middle;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.nav-left li a i {
+	height: 24px;
+	vertical-align: middle;
+	/*margin-top: -5px;*/
+	margin-top: -3px;
+	margin-right: 6px;
+}
+/*do these with js*/
+.nav-filemanager .filemanager-sub[level="1"] {
+	text-indent: 8px;
+}
+.nav-filemanager .filemanager-sub[level="2"] {
+	text-indent: 16px;
+}
+.nav-filemanager .file-active {
+	background: rgba(255,255,255,.1);
+	color: white;
 }
 .nav-right {
 	background: #455A64;
+	/*z-index: 50;*/
 }
 .nav-right li {
 	padding: 2px 0 0 0;
@@ -202,9 +242,94 @@ footer .info .editor-info span:not(#value) {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	top: 0;
 	left: 240px;
 	width: calc(100% - 240px);
+	z-index: 8
+	-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.editor-tabs {
+	position: absolute;
+	height: 30px;
+	width: 100%;
+	z-index: 8;
+	white-space: nowrap;
+	overflow: hidden;
+	/*border-bottom: 1px solid #1DE96B;*/
+	/*z-index: 10;*/
+	/*box-shadow: 2px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 10px 0 rgba(0,0,0,0.12);*/
+}
+.editor-tabs .tab {
+	cursor: default;
+	height: 30px;
+	line-height: 30px;
+	vertical-align: middle;
+	width: 180px;
+	position: relative;
+	float: left;
+	background: #253036;
+	padding: 0 10px;
+	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: rgba(255,255,255,.6);
+	font-size: 0.8em;
+	border-right: 1px solid #1D2529;
+	/*border-bottom: 1px solid #1DE96B;*/
+	-webkit-transition: all .3s ease-out;
+          transition: all .3s ease-out;
+}
+.editor-tabs .tab:hover:not(.tab-active):not(.tab-action) {
+	background: #324047;
+}
+.editor-tabs .tab-action {
+	width: 30px;
+	border: none;
+}
+.editor-tabs .tab-action .active {
+	color: #1DE96B !important;
+}
+.editor-tabs .tab-action .btn-close {
+	margin-left: 0;
+}
+.editor-tabs .tab-active {
+	background: #1D2529;
+	/*border: 1px solid #1DE96B;
+	border-bottom: 1px solid #1D2529;*/
+	/*border-bottom: 1px solid #1DE96B;*/
+}
+.editor-tabs .tab .btn-close {
+	padding: 0;
+	margin: 5px -5px 5px 0;
+	height: 20px;
+	width: 20px;
+	/*background: transparent;*/
+	border-radius: 50%;
+	color: rgba(255,255,255,.6);
+}
+.editor-tabs .tab .btn-close:hover {
+	background: #1DE96B;
+	color: #263238;
+}
+.editor-tabs .editor-tab-status {
+	margin: -9px 0 0 0;
+	padding: 0;
+	font-size: 13px;
+	height: 20px;
+	width: 20px;
+	text-align: center;
+	line-height: 20px;
+	vertical-align: middle;
+}
+.editor-tabs .editor-tab-status:not([saved="false"]):hover {
+	/*color: #263238 !important;*/
+}
+.editors {
+	position: absolute;
+	width: 100%;
+	height: calc(100% - 30px);
+	top: 30px;
 	-webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
 }
@@ -269,7 +394,76 @@ footer .info .editor-info span:not(#value) {
 	width: 100%;
 	font-family: 'Hack', monospace, sans-serif;
 	font-size: 10pt;
+	border: none;
+	z-index: 8;
 }
 .CodeMirror-scrollbar-filler {
 	background: #263238;
+}
+.editors {
+	position: absolute;
+	left: 0;
+	top: 30px;
+	height: calc(100% - 30px);
+	z-index: 8;
+	/*width: 50%;*/
+}
+.live-preview {
+	border-left: 1px solid #1DE96B;
+	position: absolute;
+	left: 100%;
+	top: 30px;
+	width: 50%;
+	height: calc(100% - 30px);
+	max-height: calc(100% - 30px);
+	/*padding: 0 30px 30px 30px;*/
+	padding: 30px;
+	/*padding: 20px;*/
+	overflow-y: auto;
+	white-space: nowrap;
+	background: #1D2529;
+	-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.live-preview-paper {
+	background: white;
+	/*padding: 56px;*/
+	padding: 10px;
+	/*height: 200%;*/
+	min-height: 100%;
+	font-family: serif;
+}
+.live-preview-warning {
+	font-family: "Hack", monospace;
+	padding: 5px;
+	font-size: 10pt;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	max-height: 200px;
+	height: 100px;
+	background: #1D2529;
+	color: #1DE96B;
+	-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+    box-shadow: 2px -3px 5px 0 rgba(0,0,0,0.16), 
+    			2px -3px 10px 0 rgba(0,0,0,0.12);
+}
+.net-state {
+	/*margin-left: 20px;*/
+	margin-right: 146px;
+}
+.net-state #icon {
+	height: 16px;
+	line-height: 16px;
+	vertical-align: middle;
+	color: #1DE96B;
+	margin-right: 6px;
+}
+.net-state #icon.offline {
+	color: #ef5350;
+}
+.net-state #icon .material-icons {
+	font-size: 12px;
 }

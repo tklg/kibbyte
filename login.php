@@ -42,10 +42,10 @@ session_start();
         width: 48%;
     }
     .inputbar-half:nth-child(odd) {
-        float: right;
+        float: left;
     }
     .inputbar-half:nth-child(even) {
-        float: left;
+        float: right;
     }
 	.userlabel {
 		color: white;
@@ -175,10 +175,10 @@ session_start();
 			</label>
 		</div>
         <section class="inputbar inputbar-half nosel nomargin">
-            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit" onclick="window.location = 'oauth.php'; return false">Sign in with Google</button>
+            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit">Sign In</button>
         </section>
         <section class="inputbar inputbar-half nosel nomargin">
-            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit">Sign In</button>
+            <button class="btn btn-submit btn-flat waves-effect waves-light" type="submit" onclick="window.location = 'oauth.php'; return false">Sign in with Google</button>
         </section>
         <div class="inputbar nomargin nointeract"></div>
         <div class="inputbar nomargin">
