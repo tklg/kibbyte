@@ -9,6 +9,12 @@ var editors_list = [];
 var editor_amt = 0;
 var tabs_list = [];
 var tab_amt = 0;
+var btnStatus = {
+	m1: false,
+	m2: false,
+	m3: false,
+	shift: false
+}
 
 $('a[data-toggle]').on('click', function() {
 	if ($(this).attr('data-toggle') == 'file-bar') {
@@ -71,6 +77,7 @@ var init = {
 			},
 			stop: function(event, ui) {
 				tabs.restoreTransition(ui.item);
+				//editors.reassignIds();
 			}
 		});
 	},
@@ -143,17 +150,18 @@ var fileBar = {
 //each Tab will have an Editor
 //the CM editor will never be replaced and there will only ever be 1
 //the content of the editor will just be switched out, unless that is laggy
-function Tab(filename) {
-	this.fileId = tab_amt;
+function Tab(filename, id, fileId) {
+	this.tabId = id;
+	this.fileId = fileId;
 	this.fileName = filename;
 	this.saved = true;
 	this.active = false;
 	this.template = _.template($("#template_tab").html());
 	this.setValue = function(value) {
-		$('.editor-tabs-container #'+this.fileId+' .filename').text(value);
+		$('.editor-tabs-container #'+this.tabId+' .filename').text(value);
 	}
 	this.getValue = function() {
-		this.value = $('.editor-tabs-container #'+this.fileId+' .filename').text();
+		this.value = $('.editor-tabs-container #'+this.tabId+' .filename').text();
 		return this.value;
 	}
 	this.setActive = function() {
@@ -161,18 +169,21 @@ function Tab(filename) {
 			tabs_list[i].setInactive();
 		}
 		this.active = true;
-		$('#'+this.fileId+'.tab').addClass('tab-active');
-		active_tab = this.fileId;
-		if (editors_list[this.fileId] != null) {
-			editors_list[this.fileId].setActive();
+		$('#'+this.tabId+'.tab').addClass('tab-active');
+		active_tab = this.tabId;
+		if (editors_list[this.tabId] != null) {
+			editors_list[this.tabId].setActive();
 		}
+		$('.file-btn').removeClass('file-active');
+		$('.file-btn[file-index='+this.tabId+']').addClass('file-active');
 	}
 	this.setInactive = function() {
 		this.active = false;
-		$('#'+this.fileId+'.tab').removeClass('tab-active');
+		$('#'+this.tabId+'.tab').removeClass('tab-active');
+		$('.file-btn[file-index='+this.tabId+']').removeClass('file-active');
 	}
 	this.create = function() {
-		var fI = this.fileId;
+		var fI = this.tabId;
 		var fN = this.fileName;
 		var tabInfo = {
 			tabId: fI,
@@ -184,13 +195,17 @@ function Tab(filename) {
 	}
 	this.destroy = function() {
 		tabs_list = _.without(tabs_list, this);
-		editors_list[this.fileId].destroy();
-		$('.editor-tabs-container #'+this.fileId).remove();
+		//tabs_list[this.tabId] = null;
+		editors_list[this.tabId].destroy();
+		$('.editor-tabs-container #'+this.tabId).remove();
+		$('.file-btn[file-index='+this.tabId+']').removeClass('file-active')
+												 .attr('file-index', '');
+        editors.reassignIds();
 		//tabs_list[tabs_list.length - 1].setActive();
-		delete this.fileId; //delete all
+		delete this.tabId; //delete all
 	}
 	this.save = function() {
-		editors_list[this.fileId].save();
+		editors_list[this.tabId].save();
 		return this;
 	}
 	this.create();
@@ -209,15 +224,17 @@ var tabs = {
 		});
 	}
 }
-function Editor() {
-	this.fileId = tab_amt;
-	this.fileName = tabs_list[tab_amt].getValue();
+function Editor(id, fileId) {
+	this.editorId = id;
+	this.fileId = fileId;
+	this.fileName = tabs_list[id].getValue();
 	this.value = '';
 	this.setValue = function(value) {
 		this.value = value;
 		return this;
 	}
 	this.setLoadedValue = function() {
+		console.warn("LOAD FILE HERE");
 		editors.setLanguage('javascript');
 		$.get("js/codemirror.js", function (data) {
 	        this.value = data;
@@ -237,15 +254,16 @@ function Editor() {
 	}
 	this.destroy = function() {
 		editors_list = _.without(editors_list, this);
+		//editors_list[this.editorId] = null;
 		delete this.value; //delete everything else too
+
+		//editors.reassignIds();
 	}
 	this.record = function() {
-		editors_list[this.fileId].setValue(editor.getValue());
-		return this;
+		editors_list[this.editorId].setValue(editor.getValue());
 	}
 	this.save = function() {
-
-		return this;
+		console.log(this.value);
 	}
 	this.create();
 	this.setLoadedValue();
@@ -298,11 +316,15 @@ var editors = {
 		});
 	},
 	recordCurrentValue: function () {
-		editors_list[active_tab].record();
+		if (active_tab > -1) editors_list[active_tab].record();
 	},
 	close: function(id) {
-
-		tabs_list[id].save().destroy();
+		if (!tabs_list[id].saved) {
+			console.warn("CONFIRM FILE NOT SAVED");
+			alert("REPLACE ME");
+		} else {
+			tabs_list[id].destroy();
+		}
 	},
 	init: function() {
 		 editor = CodeMirror.fromTextArea($('#editor-1')[0], {
@@ -318,7 +340,12 @@ var editors = {
 		    styleLineActive: true,
 		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		    extraKeys: {
-    			"Ctrl-S": function(instance) {/* codemir.savecontent(instance.getValue());*/ }
+    			"Ctrl-S": function(instance) {
+    				editors.recordCurrentValue();
+    				editors_list[active_tab].save();
+    				tabs_list[active_tab].saved = true;
+    				$('#'+active_tab+'.tab .editor-tab-status').text('clear');
+    			}
     		}
 		});
 		CodeMirror.keyMap.sublime.Backspace = null;
@@ -332,14 +359,12 @@ var editors = {
 		editor.on('change', function(instance, object) {
 			//miniMapControl.mirrorContent();
 			//instance.showHint({hint: CodeMirror.hint.anyword});
-			// if (codemir.saved) {
-			// 	codemir.saved = false;
-			// 	$('.cm-save-status i').attr('class', 'fa fa-save');
-			// }
 		});
-		/*editor.on('keyup', function(instance, event) {
-			editor.showHint(instance);
-		});*/
+		editor.on('keydown', function(instance, event) {
+			//editor.showHint(instance);
+			tabs_list[active_tab].saved = false;
+			$('#'+active_tab+'.tab .editor-tab-status').text('save');
+		});
 		editor.on('cursorActivity', function(instance) {
 			var object = instance.getCursor();
 			$('.info .line-number #value').text(object.line + 1);
@@ -365,27 +390,136 @@ var editors = {
 	},
 	setValue: function(data) {
 		editor.setValue(data);
+	},
+	reassignIds: function() {
+
+		if (tabs_list.length > 0) {
+			for (i = 0; i < editors_list.length; i++) {
+				$('#' + tabs_list[i].tabId + '.tab').attr('id', i);
+				$('.file-btn[file-index='+tabs_list[i].tabId+']').attr('file-index', i);
+				tabs_list[i].tabId = i;
+				editors_list[i].editorId = i;
+			}
+		} else {
+
+		}
+
+		active_tab = (tabs_list.length > 0) ? tabs_list.length - 1 : -1;
+		tab_amt = tabs_list.length;
+		console.log('active tab: ' + active_tab);
+
 	}
 }
 var preview = {
 
 }
-$(document).on("click", ".tab:not(.btn-close)", function() {
+$(document).on("click", ".editor-tabs-container .tab:not(.tab-active)", function(e) {
+	if (!$(e.target).hasClass('btn-close')) {
+		editors.recordCurrentValue();
+		console.log('set active to ' + $(this).attr('id'));
+		editors.reassignIds();
+		tabs_list[$(this).attr('id')].setActive();
+	}
+});
+$(document).on("click", ".editor-tabs-container .tab .btn-close", function(e) {
+	console.log('closing ' + $(this).parent().attr('id'));
+	//tabs_list[$(this).attr('id')].destroy();
+	editors.close($(this).parent().attr('id'));
+	if (active_tab > -1) tabs_list[active_tab].setActive();
+	else editor.setValue("");
+});
+$(document).on("click", ".nav-filemanager .file-btn", function(e) {
+	var ind = $(this).attr('file-index');
+	if (ind == '' || ind == null) ind = active_tab + 1;
 	editors.recordCurrentValue();
-	tabs_list[$(this).attr('id')].setActive();
+	console.log('set active to ' + ind);
+	if (tabs_list[ind] != null) {
+		console.log(ind + ' is already open');
+		tabs_list[ind].setActive();
+	} else {
+		var name = $(this).find('#file-name').text();
+		var fileId = $(this).attr('file-id');
+		$(this).attr('file-index', ind);
+		console.log(name + " " + ind);
+
+		tabs_list.push(new Tab(name, ind, fileId));
+		editors_list.push(new Editor(ind, fileId));
+	}
+	editors.reassignIds();
+	$('.file-btn').removeClass('file-active');
+	$(this).addClass('file-active');
+});
+$(document).on("mousedown", ".editors", function(e) {
+	if (e.which == 3) {
+		btnStatus.m2 = true;
+		console.log('m2'+btnStatus.m2);
+	}
+});
+$(document).on("mouseup", ".editors", function(e) {
+	if (e.which == 3) {
+		btnStatus.m2 = false;
+		console.log('m2'+btnStatus.m2);
+	}
+});
+$(document).on("keydown", function(e) {
+	if (e.which == 16) {
+		btnStatus.shift = true;
+	}
+});
+$(document).on("keyup", function(e) {
+	if (e.which == 16) {
+		btnStatus.shift = false;
+	}
+});
+$(window).bind('mousewheel DOMMouseScroll', function(e){
+    if (e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0) {
+        console.log("scrollup");
+        //scrollable tab switching
+        if (btnStatus.m2) {
+        	e.preventDefault();
+	        if (active_tab == 0) {
+        		var newInd = tabs_list.length - 1;
+	        } else {
+	        	var newInd = active_tab - 1;
+	        }
+        	editors.recordCurrentValue();
+			console.log('set active to ' + newInd);
+			editors.reassignIds();
+			tabs_list[newInd].setActive();
+		}
+    } else {
+        console.log("scrolldown");
+        if (btnStatus.m2) {
+        	e.preventDefault();
+	        if (active_tab == tabs_list.length - 1) {
+	        	var newInd = 0;
+	        } else {
+        		var newInd = active_tab + 1;
+	        }
+        	editors.recordCurrentValue();
+			console.log('set active to ' + newInd);
+			editors.reassignIds();
+			tabs_list[newInd].setActive();
+		}
+    }
+});
+$(document).on("contextmenu", function(e) {
+	if (!btnStatus.shift) e.preventDefault();
 });
 var test = {
 	tabs: function() {
-		tabs_list.push(new Tab("README.md"));
-		editors_list.push(new Editor());
+		//load some test tabs (the first 3)
 
-		tabs_list.push(new Tab("CodeMirror.js"));
-		editors_list.push(new Editor());
+		tabs_list.push(new Tab("README.md", 0, 12131));
+		editors_list.push(new Editor(0, 12131));
 
-		tabs_list.push(new Tab("kibbyte.js"));
-		editors_list.push(new Editor());
+		tabs_list.push(new Tab("CodeMirror.js", 1, 234331));
+		editors_list.push(new Editor(1, 234331));
+
+		tabs_list.push(new Tab("kibbyte.js", 2, 1246451));
+		editors_list.push(new Editor(2, 1246451));
 	},
 	editors: function() {
-		
+		editor.setValue("'https://www.google.com/design/spec/components/dialogs.html#dialogs-confirmation-dialogs'");
 	}
 }

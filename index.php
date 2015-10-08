@@ -30,40 +30,39 @@ $username = $_SESSION['user_name'];
 	<section class="nav z-depth-1">
 	    <a id="btn-burger" data-toggle="file-bar" class="btn btn-burger btn-flat waves-effect waves-circle waves-light"><i class="material-icons">menu</i></a>
 	    <div class="title noselect"><a>Kibbyte</a></div>
-	    <ul class="actions noselect">
+	    <ul class="right quickmenu">		    
+		    <a href="#" data-activates="account-bar" class="button-account-bar show-on-large"><li class="btn btn-flat btn-header-menu btn-header-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li></a>
+	    </ul>
+	    <ul class="actions editor-ribbon noselect z-depth-1">
 		    <li class="btn-flat">File</li>
 		    <li class="btn-flat">Edit</li>
 		    <li class="btn-flat">View</li>
 		    <li class="btn-flat">Insert</li>
-		    <li class="btn-flat">Format</li>
 		    <li class="btn-flat">Tools</li>
 		    <li class="btn-flat">Help</li>
-	    </ul>
-	    <ul class="right quickmenu">		    
-		    <a href="#" data-activates="account-bar" class="button-account-bar show-on-large"><li class="btn btn-flat btn-header-menu btn-header-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li></a>
 	    </ul>
 	</section>
 </header>
 <main>
 	<nav class="nav-side nav-left nav-filemanager">
 		<form>
-	        <div class="input-field">
-	          	<input id="search" type="search" placeholder="Search" required>
-	          	<label for="search"><i class="material-icons">search</i></label>
-	          	<i class="material-icons">close</i>
-	        </div>
-	    </form>
+		    <div class="input-field">
+		       	<input id="search" type="search" placeholder="Search" required>
+		      	<label for="search"><i class="material-icons">search</i></label>
+		       	<i class="material-icons">close</i>
+		    </div>
+		</form>
 	    <ul class="noselect">
-		    <li class="btn-flat waves-effect waves-light"><a href="#"><i class="material-icons">folder_open</i>First Sidebar Link</a></li>
+		    <li class="btn-flat file-btn" file-index="0" file-id="1231"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">README.md</span></a></li>
 		    <ul class="filemanager-sub" level="1">
-		    	<li class="btn-flat"><a href="#"><i class="material-icons">folder_open</i>First Sub Link</a></li>
+		    	<li class="btn-flat file-btn" file-index="1" file-id="12341"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">codemirror.js</span></a></li>
 		    	<ul class="filemanager-sub" level="2">
-			    	<li class="btn-flat file-active"><a href="#"><i class="material-icons">code</i>First Sub Link</a></li>
-			    	<li class="btn-flat"><a href="#"><i class="material-icons">format_align_left</i>Second Sub Link</a></li>
+			    	<li class="btn-flat file-btn file-active" file-index="2" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">kibbyte.js</span></a></li>
+			    	<li class="btn-flat file-btn" file-index="" file-id="123231"><a href="#"><i class="material-icons">format_align_left</i><span id="file-name">blah</span></a></li>
 			    </ul>
-		    	<li class="btn-flat"><a href="#"><i class="material-icons">folder</i>Second Sub Link</a></li>
+		    	<li class="btn-flat file-btn" file-index="" file-id="1ewfaf"><a href="#"><i class="material-icons">folder</i><span id="file-name">foo</span></a></li>
 		    </ul>
-		    <li class="btn-flat"><a href="#"><i class="material-icons">folder</i>Second Sidebar Link</a></li>
+		    <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons">folder</i><span id="file-name">bar</span></a></li>
 	    </ul>
   	</nav>
   	<ul id="account-bar" class="side-nav nav-right z-depth-2">
@@ -78,14 +77,16 @@ $username = $_SESSION['user_name'];
 				<!-- <div class="tab tab-active">CodeMirror.js<div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status" saved="false">save</i></div></div>-->
 			</section>
 			<div class="tab tab-action right"><a data-toggle="live-preview" class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">visibility</i></a></div>
-			<div class="tab tab-action right"><a class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">menu</i></a></div>
+			<div class="tab tab-action right" onclick="listTabs()"><a class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">menu</i></a></div>
 		</section>
 		<section class="editors">
 			<textarea class="editor" id="editor-1"></textarea>
 		</section>
 		<section class="live-preview">
-			<div class="live-preview-paper z-depth-2">
-				The quick brown fox jumps over the lazy dog.
+			<div class="live-preview-scroller">
+				<div class="live-preview-paper z-depth-2">
+					<blockquote>The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.</blockquote>
+				</div>
 			</div>
 			<div class="live-preview-warning z-depth-2">
 				Some error, maybe
@@ -96,10 +97,6 @@ $username = $_SESSION['user_name'];
 <footer>
 	<div class="info">
 		<div class="position-info">
-			<span class="net-state">
-				<span id="icon"><i class="material-icons">brightness_1</i></span>
-				<span id="value">Connected</span>
-			</span>
 			<span class="line-number">
 				Line <span id="value">1</span>,
 			</span>
@@ -108,6 +105,10 @@ $username = $_SESSION['user_name'];
 			</span>
 			<span class="random-info">
 				<span id="value"></span>
+			</span>
+			<span class="net-state">
+				<span id="icon"><i class="material-icons">brightness_1</i></span>
+				<span id="value">Connected</span>
 			</span>
 		</div>
 		<div class="editor-info right">
@@ -121,7 +122,7 @@ $username = $_SESSION['user_name'];
 	</div>
 </footer>
 <script type="text/template" id="template_tab">
-<div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light" onclick="editors.close(<%= tabId %>)"><i class="material-icons editor-tab-status">clear</i></div></div>
+<div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">clear</i></div></div>
 </script>
 </body>
 

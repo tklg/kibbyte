@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">   
     <!-- change this into a html page that uses js to read the querystring -->
+    <!-- actually, that probably wont work -->
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
     <style type="text/css">
@@ -14,6 +15,12 @@
 		-webkit-font-smoothing: antialiased;
 		background: #263238;
 		overflow: hidden;
+        -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     }
     a {
 		text-decoration: none;
@@ -24,42 +31,43 @@
 	a:hover {
 		color: #ccc;
 	}
-	::-webkit-scrollbar {
-    width: 10px;
-}
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-    background: #243135;
-}
-::-webkit-scrollbar-thumb {
-    background-color: #1DE9B6;
-    outline: 1px solid #009688;
-}
-::selection {
-    color: #00796B;
-    background: #1de986;
-}
     #wrapper {
-    	height: 50%;
-    	width: 50%;
+    	height: 400px;
+    	width: 400px;
     	position: absolute;
     	top: 0; bottom: 0; left: 0; right: 0;
     	margin: auto;
+        text-align: center;
     }
     .errornumber {
-    	font-size: 100pt;
-    	padding: 0;
+        width: 200px;
+        height: 200px;
+        line-height: 200px;
+        vertical-align: middle;
+        border: 1px solid #1de96b;
+        border-radius: 50%;
+        text-align: center;
+    	font-size: 60pt;
+    	padding: auto;
+        position: absolute;
+        left: 100px;
     	margin: 0;
-    	/*font-family: 'quicksandlight', sans-serif;*/
-    }
-    .errornumber::first-letter {
-    	color: #1DE96B;
+        background: #1de96b;
+        color: #263238;
     }
     .errordesc {
+        position: absolute;
+        top: 230px;
     	margin: 0;
-        padding-left: 5px;
+        width: 100%;
+        text-align: center;
     }
-        input:active,
+    .errorsol {
+        position: absolute;
+        top: 265px;
+        width: 100%;
+    }
+input:active,
 input:focus,
 button:active,
 button:focus {
@@ -68,6 +76,7 @@ button:focus {
 }
 .btn:hover {
     background: #1DE96B;
+    color: #263238;
 }
 .btn {
     cursor: pointer;
@@ -93,11 +102,11 @@ button:focus {
 	if(isset($_GET['404'])) {$er = '404'; $de = 'The requested page does not exist.';}
 	if(isset($_GET['500'])) {$er = '500'; $de = 'Something is broken!';}
 	if(isset($_GET['403'])) {$er = '403'; $de = 'Access is forbidden.';}
-	if(isset($_GET['418'])) {$er = '418'; $de = 'I\'m a teapot.<br><br>The resulting entity body is short and stout.<br>Tip me over and pour me out.';}
+	if(isset($_GET['418'])) {$er = '418'; $de = 'I\'m a teapot.';}
 	if(isset($_GET['502'])) {$er = '502'; $de = 'Bad gateway.';}
 	?>
 	<div id="wrapper">
-	<p class="errornumber">
+	<p class="errornumber z-depth-2">
 	<?php
 	echo $er;
 	?>
@@ -108,18 +117,13 @@ button:focus {
 	?>
 	</p>
 	<p class="errorsol">
-        <a onclick="window.history.back()"><button class="btn">Go Back</button></a>
+        <a onclick="window.history.back()"><button class="btn btn-flat z-depth-2">Go Back</button></a>
 	</p>
 	</div>
   	<script type="text/javascript" src="js/showlog.js"></script>
     <!-- <script type="text/javascript" src="js/foxfile.js"></script> -->
     <script type="text/javascript">
-    <?php
-    if(isset($_GET['404'])) echo 'var code = 404;';
-	if(isset($_GET['500'])) echo 'var code = 500;';
-	if(isset($_GET['403'])) echo 'var code = 403;';
-	?>
-    document.title = 'Kibbyte - Error ' + code;
+    document.title = 'Kibbyte - Error <?php echo $er ?>';
     </script>
 </body>
 </html>

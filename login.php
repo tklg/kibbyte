@@ -154,7 +154,7 @@ session_start();
     	z-index: -1;
     }
 </style>
-    <title>Title - Login</title>
+    <title>Kibbyte</title>
 </head>
 <body>
 <section class="wrapper">
