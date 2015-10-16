@@ -1,10 +1,30 @@
+/*
+
+	888    d8P  d8b 888      888               888            
+	888   d8P   Y8P 888      888               888            
+	888  d8P        888      888               888            
+	888d88K     888 88888b.  88888b.  888  888 888888 .d88b.  
+	8888888b    888 888 "88b 888 "88b 888  888 888   d8P  Y8b 
+	888  Y88b   888 888  888 888  888 888  888 888   88888888 
+	888   Y88b  888 888 d88P 888 d88P Y88b 888 Y88b. Y8b.     
+	888    Y88b 888 88888P"  88888P"   "Y88888  "Y888 "Y8888  
+	                                       888                
+	                                  Y8b d88P                
+	                                   "Y88P"                 
+
+	kibbyte - kibbyte.js
+	Copyright (C) 2015 Theodore Kluge - All Rights Reserved
+	http://tkluge.net
+
+*/
+
 var fileBarIsOpen = true,
 	livePreviewIsOpen = false;
 var winWidth = $(document).width();
 var res;
 var netState = true;
 var editor;
-var active_tab = 0;
+var active_tab = -1;
 var editors_list = [];
 var editor_amt = 0;
 var tabs_list = [];
@@ -13,8 +33,10 @@ var btnStatus = {
 	m1: false,
 	m2: false,
 	m3: false,
-	shift: false
+	shift: false,
+	scrollingTabs: false
 }
+var menu;
 
 $('a[data-toggle]').on('click', function() {
 	if ($(this).attr('data-toggle') == 'file-bar') {
@@ -48,7 +70,7 @@ $(window).resize(function() {
 	clearTimeout(res);
 	res = setTimeout(function() {
 	    winWidth = $(window).width();
-	    editors.updateSize();
+	    //editors.updateSize();
 	}, 100);
 });
 var init = {
@@ -132,6 +154,16 @@ var fileBar = {
 			'left': width,
 			'width': 'calc(100% - ' + width + 'px)'
 		});
+		if (!livePreviewIsOpen) {
+			$('.editors').css({
+				'width': winWidth - width + "px"
+			});
+		} else {
+			editors.updatePreviewWidthToMatch(editors.width);
+			$('.editors').css({
+				'width': winWidth - preview.width - width + "px"
+			});
+		}
 		this.width = width;
 	},
 	removeTransition: function() {
@@ -274,10 +306,10 @@ var editors = {
 	width: "50%",
 	maxWidth: winWidth - 240,
 	maxMaxWidth: winWidth,
-	updateSize: function() {
+	/*updateSize: function() {
 		this.maxWidth = winWidth - 240;
 		if (!livePreviewIsOpen) $('.editors').css({'width': this.maxWidth});
-	},
+	},*/
 	showPreview: function() {
 		$('a[data-toggle="live-preview"]').addClass('active');
 		$('.live-preview').css({
@@ -302,6 +334,10 @@ var editors = {
 			'width': 'calc(100% - ' + width + 'px)'
 		});
 		this.width = width;
+		if (!fileBarIsOpen)
+			preview.width = winWidth - width;
+		else 
+			preview.width = winWidth - fileBar.width - width;
 	},
 	removeTransition: function() {
 		$('.editors, .live-preview').css({
@@ -322,8 +358,10 @@ var editors = {
 		if (!tabs_list[id].saved) {
 			console.warn("CONFIRM FILE NOT SAVED");
 			alert("REPLACE ME");
+			return false;
 		} else {
 			tabs_list[id].destroy();
+			return true;
 		}
 	},
 	init: function() {
@@ -411,8 +449,93 @@ var editors = {
 	}
 }
 var preview = {
-
+	width: (fileBarIsOpen) ? (winWidth - fileBar.width) / 2 : winWidth / 2
 }
+var files = {
+	loadJSON: function(id, parent) {
+		$.post('query.php',
+		{
+			get_folder_contents: id
+		},
+		function(result) {
+			files.openFolder(id, parent, result);
+		});
+	},
+	openFolder: function(id, parent, result) {
+		//var json = $.parseJSON(this.loadJSON(id));
+		var json = JSON.parse(result);
+		//var arr = [];
+		var file_template = _.template($('#template_file').html());
+		var folder_template = _.template($('#template_folder').html());
+		var html = '';
+		for (i = 0; i < json.length; i++) {
+			var obj = {
+				name: json[i].title,
+				mime: json[i].mimeType,
+				ext: json[i].fileExtension,
+				id: json[i].id,
+				icon: files.getIcon(json[i].mimeType)
+			}
+			html += file_template(obj);
+			if (obj.mime == 'application/vnd.google-apps.folder') {
+				obj.level = this.getLevelFromRoot(id) || 0;
+				html += folder_template(obj);;
+			}
+		}
+		this.appendTo(parent, html);
+
+	},
+	appendTo: function(id, content) {
+		$('ul[file-id='+id+']').append(content);
+	},
+	close: function(id) {
+		$('ul[file-id='+id+']').remove(); //change this to make it nicer with animations/stuff
+	},
+	getIcon: function(mime) {
+		if (mime.includes('vnd.google-apps.folder')) {
+			return 'folder';
+		} else if (mime.includes('image')) {
+			return 'image';
+		} else {
+			return 'insert_drive_file';
+		}
+	},
+	getLevelFromRoot: function(id) {
+		return null;
+	}
+}
+function Menu(x, y) {
+	this.x = x;
+	this.y = y;
+	this.width = 200;
+	this.itemsCount = 0;
+	this.create = function() {
+		this.destroy();
+		var menuTemplate = _.template($('#contextmenu').html());
+		$('body').append(menuTemplate());
+		$('.clickmenu').css({
+			'top': this.y,
+			'left': this.x
+		});
+	}
+	this.destroy = function() {
+		$('.clickmenu').remove();
+	}
+	this.append = function(item) {
+		$('.clickmenu ul').append(item);
+	}
+	this.appendDivider = function() {
+		$('.clickmenu ul').append('<li class=\"divider\"></li>');
+	}
+	this.create();
+}
+function MenuItem(parent, content, icon, fn) {
+	this.itemTemplate = _.template($('#menuitem').html());
+	this.get = function() {
+		return this.itemTemplate({id: parent.itemsCount++, content: content, icon: icon, fn: fn});
+	}
+}
+//click on tab to switch
 $(document).on("click", ".editor-tabs-container .tab:not(.tab-active)", function(e) {
 	if (!$(e.target).hasClass('btn-close')) {
 		editors.recordCurrentValue();
@@ -421,13 +544,27 @@ $(document).on("click", ".editor-tabs-container .tab:not(.tab-active)", function
 		tabs_list[$(this).attr('id')].setActive();
 	}
 });
+//click on button to close
 $(document).on("click", ".editor-tabs-container .tab .btn-close", function(e) {
 	console.log('closing ' + $(this).parent().attr('id'));
 	//tabs_list[$(this).attr('id')].destroy();
-	editors.close($(this).parent().attr('id'));
-	if (active_tab > -1) tabs_list[active_tab].setActive();
-	else editor.setValue("");
+	if (editors.close($(this).parent().attr('id'))) {
+		if (active_tab > -1) tabs_list[active_tab].setActive();
+		else editor.setValue("");
+	}
 });
+//middle click on tab to close
+$(document).on("mouseup", ".editor-tabs-container .tab", function(e) {
+	if (e.which == 2) {
+		console.log('closing ' + $(this).attr('id'));
+		//tabs_list[$(this).attr('id')].destroy();
+		if (editors.close($(this).attr('id'))) {
+			if (active_tab > -1) tabs_list[active_tab].setActive();
+			else editor.setValue("");
+		}
+	}
+});
+//click on file menu to switch or open
 $(document).on("click", ".nav-filemanager .file-btn", function(e) {
 	var ind = $(this).attr('file-index');
 	if (ind == '' || ind == null) ind = active_tab + 1;
@@ -450,15 +587,34 @@ $(document).on("click", ".nav-filemanager .file-btn", function(e) {
 	$(this).addClass('file-active');
 });
 $(document).on("mousedown", ".editors", function(e) {
-	if (e.which == 3) {
-		btnStatus.m2 = true;
-		console.log('m2'+btnStatus.m2);
+	switch (e.which) {
+		case 1: 
+			btnStatus.m1 = true;
+			break;
+		case 2:
+			btnStatus.m3 = true;
+			break;
+		case 3:
+			btnStatus.m2 = true;
+			break;
+		default:
+
 	}
 });
 $(document).on("mouseup", ".editors", function(e) {
-	if (e.which == 3) {
-		btnStatus.m2 = false;
-		console.log('m2'+btnStatus.m2);
+	switch (e.which) {
+		case 1: 
+			btnStatus.m1 = false;
+			break;
+		case 2:
+			btnStatus.m3 = false;
+			break;
+		case 3:
+			btnStatus.m2 = false;
+			if (btnStatus.scrollingTabs) setTimeout(function() {btnStatus.scrollingTabs = false;}, 100);
+			break;
+		default:
+
 	}
 });
 $(document).on("keydown", function(e) {
@@ -477,6 +633,7 @@ $(window).bind('mousewheel DOMMouseScroll', function(e){
         //scrollable tab switching
         if (btnStatus.m2) {
         	e.preventDefault();
+        	btnStatus.scrollingTabs = true;
 	        if (active_tab == 0) {
         		var newInd = tabs_list.length - 1;
 	        } else {
@@ -491,6 +648,7 @@ $(window).bind('mousewheel DOMMouseScroll', function(e){
         console.log("scrolldown");
         if (btnStatus.m2) {
         	e.preventDefault();
+        	btnStatus.scrollingTabs = true;
 	        if (active_tab == tabs_list.length - 1) {
 	        	var newInd = 0;
 	        } else {
@@ -504,20 +662,66 @@ $(window).bind('mousewheel DOMMouseScroll', function(e){
     }
 });
 $(document).on("contextmenu", function(e) {
-	if (!btnStatus.shift) e.preventDefault();
+	if (!btnStatus.shift) {
+		console.log($(e.target).attr('class'));
+		e.preventDefault();
+		if (!btnStatus.scrollingTabs) {
+			if ($(e.target).hasClass('cm-string') || $(e.target).hasClass('CodeMirror-scroll')) {
+				//clicked on editor
+				//e.preventDefault();
+				menu = new Menu(e.pageX, e.pageY);
+				menu.append(new MenuItem(menu, "Copy", "content_copy", "fn1").get());
+				menu.append(new MenuItem(menu, "Cut", "content_cut", "fn2").get());
+				menu.append(new MenuItem(menu, "Paste", "content_paste", "fn2").get());
+				menu.appendDivider();
+				menu.append(new MenuItem(menu, "Select All", "add_circle_outline", "fn3").get());
+			} else if ($(e.target).parents('.file-btn').length
+					|| $(e.target).hasClass('file-btn')) {
+				//clicked on file bar
+				//e.preventDefault();
+				id = $(e.target).parents('.file-btn').attr('file-id') || $(e.target).attr('file-id');
+				console.log('fileid: ' + id);
+				menu = new Menu(e.pageX, e.pageY);
+				menu.append(new MenuItem(menu, "Delete", "delete", "fn1").get());
+				menu.append(new MenuItem(menu, "Rename", "create", "fn2").get());
+				menu.append(new MenuItem(menu, "Move", "content_cut", "fn2").get());
+				menu.appendDivider();
+				menu.append(new MenuItem(menu, "Share", "send", "fn3").get());
+				menu.append(new MenuItem(menu, "Download", "file_download", "fn4").get());
+			} else if ($(e.target).parents('.tab').length
+					|| $(e.target).hasClass('tab')) {
+				//clicked on tab
+				//e.preventDefault();
+				id = $(e.target).parents('.tab').attr('id') || $(e.target).attr('id');
+				console.log('fileid: ' + id);
+				menu = new Menu(e.pageX, e.pageY);
+				menu.append(new MenuItem(menu, "Close", "remove", "fn1").get());
+				menu.append(new MenuItem(menu, "Close Other Tabs", "remove_circle_outline", "fn2").get());
+				menu.appendDivider();
+				menu.append(new MenuItem(menu, "New File", "insert_drive_file", "fn3").get());
+				menu.append(new MenuItem(menu, "Open File", "create", "fn4").get());
+			}
+		}
+	}
+});
+$(document).on('mousedown', function(e) {
+	if (menu!=null) menu.destroy();
 });
 var test = {
 	tabs: function() {
+
+		files.loadJSON('root', 'root');
+
 		//load some test tabs (the first 3)
 
-		tabs_list.push(new Tab("README.md", 0, 12131));
-		editors_list.push(new Editor(0, 12131));
+		/*tabs_list.push(new Tab("README.md", 0, 12131));
+		editors_list.push(new Editor(0, 12131));*/
 
-		tabs_list.push(new Tab("CodeMirror.js", 1, 234331));
+		/*tabs_list.push(new Tab("CodeMirror.js", 1, 234331));
 		editors_list.push(new Editor(1, 234331));
 
 		tabs_list.push(new Tab("kibbyte.js", 2, 1246451));
-		editors_list.push(new Editor(2, 1246451));
+		editors_list.push(new Editor(2, 1246451));*/
 	},
 	editors: function() {
 		editor.setValue("'https://www.google.com/design/spec/components/dialogs.html#dialogs-confirmation-dialogs'");

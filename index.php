@@ -1,22 +1,45 @@
 <?php
 session_start();
 if (!isset ($_SESSION['access_token'])) header ("Location: login");
+else {
+	
+}
 $userphoto = $_SESSION['user_picture'];
 $username = $_SESSION['user_name'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<!--
+
+	888    d8P  d8b 888      888               888            
+	888   d8P   Y8P 888      888               888            
+	888  d8P        888      888               888            
+	888d88K     888 88888b.  88888b.  888  888 888888 .d88b.  
+	8888888b    888 888 "88b 888 "88b 888  888 888   d8P  Y8b 
+	888  Y88b   888 888  888 888  888 888  888 888   88888888 
+	888   Y88b  888 888 d88P 888 d88P Y88b 888 Y88b. Y8b.     
+	888    Y88b 888 88888P"  88888P"   "Y88888  "Y888 "Y8888  
+	                                       888                
+	                                  Y8b d88P                
+	                                   "Y88P"                 
+
+	kibbyte - index.php
+	Copyright (C) 2015 Theodore Kluge - All Rights Reserved
+	http://tkluge.net
+
+-->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1">
     <title>Kibbyte</title>
-	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.013/css/hack.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
-	<link rel="stylesheet" href="css/codemirror.css">
-	<link rel="stylesheet" href="css/kibbyte.css">
+	<link async href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link async href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+	<link async rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.013/css/hack.min.css">
+	<link async rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+	<link async rel="stylesheet" href="css/codemirror.css">
+	<link async rel="stylesheet" href="css/kibbyte.css">
+	<link rel="icon" type="image/ico" href="favicon.ico">
 		
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -45,24 +68,26 @@ $username = $_SESSION['user_name'];
 </header>
 <main>
 	<nav class="nav-side nav-left nav-filemanager">
-		<form>
+		<!-- <form>
 		    <div class="input-field">
 		       	<input id="search" type="search" placeholder="Search" required>
 		      	<label for="search"><i class="material-icons">search</i></label>
 		       	<i class="material-icons">close</i>
 		    </div>
-		</form>
-	    <ul class="noselect">
-		    <li class="btn-flat file-btn" file-index="0" file-id="1231"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">README.md</span></a></li>
+		</form> -->
+	    <ul class="noselect" id="file-list" file-id="root">
+		    <!-- <li class="btn-flat file-btn" file-index="0" file-id="1231"><a href="#"><i class="material-icons">format_align_left</i><span id="file-name">README.md</span></a></li>
+		    <li class="btn-flat file-btn" file-index="1" file-id="12341"><a href="#"><i class="material-icons">code</i><span id="file-name">codemirror.js</span></a></li>
+			<li class="btn-flat file-btn file-active" file-index="2" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">kibbyte.js</span></a></li>
 		    <ul class="filemanager-sub" level="1">
-		    	<li class="btn-flat file-btn" file-index="1" file-id="12341"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">codemirror.js</span></a></li>
+		    	<li class="btn-flat file-btn" file-index="" file-id="12341"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">agwegw</span></a></li>
 		    	<ul class="filemanager-sub" level="2">
-			    	<li class="btn-flat file-btn file-active" file-index="2" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">kibbyte.js</span></a></li>
+					<li class="btn-flat file-btn file-active" file-index="" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">jvu03</span></a></li>
 			    	<li class="btn-flat file-btn" file-index="" file-id="123231"><a href="#"><i class="material-icons">format_align_left</i><span id="file-name">blah</span></a></li>
 			    </ul>
 		    	<li class="btn-flat file-btn" file-index="" file-id="1ewfaf"><a href="#"><i class="material-icons">folder</i><span id="file-name">foo</span></a></li>
 		    </ul>
-		    <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons">folder</i><span id="file-name">bar</span></a></li>
+		    <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons">folder</i><span id="file-name">bar</span></a></li> -->
 	    </ul>
   	</nav>
   	<ul id="account-bar" class="side-nav nav-right z-depth-2">
@@ -85,7 +110,7 @@ $username = $_SESSION['user_name'];
 		<section class="live-preview">
 			<div class="live-preview-scroller">
 				<div class="live-preview-paper z-depth-2">
-					<blockquote>The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.</blockquote>
+					<blockquote>The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.</blockquote>
 				</div>
 			</div>
 			<div class="live-preview-warning z-depth-2">
@@ -124,12 +149,24 @@ $username = $_SESSION['user_name'];
 <script type="text/template" id="template_tab">
 <div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">clear</i></div></div>
 </script>
+<script type="text/template" id="contextmenu">
+<section class="clickmenu z-depth-2"><ul></ul></section>
+</script>
+<script type="text/template" id="menuitem">
+<li class="waves-effect waves-light" id="<%= id %>" onclick="<%= fn %>"><i class="material-icons"><%= icon %></i><span><%= content %></span></li>
+</script>
+<script type="text/template" id="template_file">
+<li class="btn-flat file-btn" file-index="" file-id="<%= id %>" type="<%= ext %>" mime="<%= mime %>"><a href="#"><i class="material-icons"><%= icon %></i><span id="file-name"><%= name %></span></a></li>
+</script>
+<script type="text/template" id="template_folder">
+<ul class="filemanager-sub" level="<%= level %>" folder-id="<%= id %>"></ul>
+</script>
 </body>
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
 	<script src="js/jquery.nicescroll.js"></script>
     <script src="js/underscore.min.js"></script>
     <!--<script src="js/backbone.min.js"></script>-->
@@ -137,10 +174,9 @@ $username = $_SESSION['user_name'];
     <!--<script src="js/minimap.js"></script>-->
     <script src="js/offline.min.js"></script>
     <script src="js/kibbyte.js"></script>
-
     <link rel="stylesheet" href="css/cm-themes/kibbyte-mint.css">
-    <script type="text/javascript" src="js/codemirror.js"></script>
     <script src="js/cm-keymap/sublime.js"></script>
+    <!-- load these in with js when needed -->
     <script src="js/cm-addon/dialog/dialog.js"></script>
     <link href="js/cm-addon/dialog/dialog.css" rel="stylesheet" />
     <script src="js/cm-addon/search/searchcursor.js"></script>
@@ -166,7 +202,6 @@ $username = $_SESSION['user_name'];
     <script src="js/cm-mode/clike/clike.js"></script>-->
     <script src="js/cm-mode/javascript/javascript.js"></script>
     <script>
-    var editor;
     var res;
     $(document).ready(function() {
     	init.fileBar();

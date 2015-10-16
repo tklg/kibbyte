@@ -6,6 +6,7 @@ session_start();
 <head>
 <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <link rel="stylesheet" href="css/kibbyte.css">
+<link rel="icon" type="image/ico" href="favicon.ico">
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css"> -->
 <style type="text/css">
 	html, body {

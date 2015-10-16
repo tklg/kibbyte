@@ -158,7 +158,7 @@ footer .info .editor-info span:not(#value) {
 	width: 240px;
 	height: calc(100% - 30px);
 	margin: 0;
-	padding: 0;
+	padding: 8px 0 0 0;
 	z-index: 9;
 	-webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
@@ -303,8 +303,8 @@ footer .info .editor-info span:not(#value) {
 	font-size: 0.8em;
 	border-right: 1px solid #1D2529;
 	/*border-bottom: 1px solid #1DE96B;*/
-	-webkit-transition: all .3s ease-out;
-          transition: all .3s ease-out;
+	-webkit-transition: all .1s ease-out;
+          transition: all .1s ease-out;
 }
 .editor-tabs .tab:hover:not(.tab-active):not(.tab-action) {
 	background: #324047;
@@ -416,8 +416,13 @@ footer .info .editor-info span:not(#value) {
 }
 .editor,
 .CodeMirror {
+	position: absolute;
 	height: 100%;
 	width: 100%;
+/*	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;*/
 	font-family: 'Hack', monospace, sans-serif;
 	font-size: 10pt;
 	border: none;
@@ -457,7 +462,13 @@ footer .info .editor-info span:not(#value) {
 	padding: 10px;
 	/*height: 200%;*/
 	min-height: 100%;
+	/*width: 100%;*/
+	word-wrap: break-all;
+	white-space: normal;
 	font-family: serif;
+}
+.live-preview-paper blockquote {
+	border-left: 5px #1DE96B solid;
 }
 .live-preview-warning {
 	font-family: "Hack", monospace;
@@ -493,4 +504,44 @@ footer .info .editor-info span:not(#value) {
 }
 .net-state #icon .material-icons {
 	font-size: 12px;
+}
+.clickmenu {
+	padding: 0;
+	width: 200px;
+	background: #263238;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 12;
+}
+.clickmenu ul {
+	padding: 6px 0;
+	margin: 0;
+}
+.clickmenu li {
+	width: 100%;
+	padding: 8px 14px;
+	cursor: pointer;
+	font-size: 0.9em;
+	color: rgba(255,255,255,.6);
+	border-radius: 0;
+}
+.clickmenu li:hover {
+	background: #1DE96B;
+	color: #263238;
+}
+.clickmenu li.divider {
+	height: 2px;
+	padding: 0;
+	margin: 6px 0;
+	background: #455A64;
+	cursor: default;
+}
+.clickmenu li i {
+	height: 24px;
+	width: 24px;
+	padding: 0;
+	vertical-align: middle;
+	margin-top: -3px;
+	margin-right: 12px;
 }
