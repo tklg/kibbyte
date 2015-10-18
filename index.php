@@ -47,6 +47,7 @@ $username = $_SESSION['user_name'];
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style id="injected"></style>
   </head>
 <body>
 <header>
@@ -57,12 +58,12 @@ $username = $_SESSION['user_name'];
 		    <a href="#" data-activates="account-bar" class="button-account-bar show-on-large"><li class="btn btn-flat btn-header-menu btn-header-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li></a>
 	    </ul>
 	    <ul class="actions editor-ribbon noselect z-depth-1">
-		    <li class="btn-flat">File</li>
-		    <li class="btn-flat">Edit</li>
-		    <li class="btn-flat">View</li>
-		    <li class="btn-flat">Insert</li>
-		    <li class="btn-flat">Tools</li>
-		    <li class="btn-flat">Help</li>
+		    <li class="btn-flat" id="menu_file">File</li>
+		    <li class="btn-flat" id="menu_edit">Edit</li>
+		    <li class="btn-flat" id="menu_view">View</li>
+		    <li class="btn-flat" id="menu_insert">Insert</li>
+		    <li class="btn-flat" id="menu_tools">Tools</li>
+		    <li class="btn-flat" id="menu_help">Help</li>
 	    </ul>
 	</section>
 </header>
@@ -75,19 +76,8 @@ $username = $_SESSION['user_name'];
 		       	<i class="material-icons">close</i>
 		    </div>
 		</form> -->
-	    <ul class="noselect" id="file-list" file-id="root">
-		    <!-- <li class="btn-flat file-btn" file-index="0" file-id="1231"><a href="#"><i class="material-icons">format_align_left</i><span id="file-name">README.md</span></a></li>
-		    <li class="btn-flat file-btn" file-index="1" file-id="12341"><a href="#"><i class="material-icons">code</i><span id="file-name">codemirror.js</span></a></li>
-			<li class="btn-flat file-btn file-active" file-index="2" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">kibbyte.js</span></a></li>
-		    <ul class="filemanager-sub" level="1">
-		    	<li class="btn-flat file-btn" file-index="" file-id="12341"><a href="#"><i class="material-icons">folder_open</i><span id="file-name">agwegw</span></a></li>
-		    	<ul class="filemanager-sub" level="2">
-					<li class="btn-flat file-btn file-active" file-index="" file-id="1wer"><a href="#"><i class="material-icons">code</i><span id="file-name">jvu03</span></a></li>
-			    	<li class="btn-flat file-btn" file-index="" file-id="123231"><a href="#"><i class="material-icons">format_align_left</i><span id="file-name">blah</span></a></li>
-			    </ul>
-		    	<li class="btn-flat file-btn" file-index="" file-id="1ewfaf"><a href="#"><i class="material-icons">folder</i><span id="file-name">foo</span></a></li>
-		    </ul>
-		    <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons">folder</i><span id="file-name">bar</span></a></li> -->
+	    <ul class="noselect" id="file-list" folder-id="root">
+		    <!-- <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons"><img src="img/spinner.svg" height="16px" width="16px"></i><span id="file-name">bar</span></a></li> -->
 	    </ul>
   	</nav>
   	<ul id="account-bar" class="side-nav nav-right z-depth-2">
@@ -120,7 +110,7 @@ $username = $_SESSION['user_name'];
 	</section>
 </main>
 <footer>
-	<div class="info">
+	<section class="info">
 		<div class="position-info">
 			<span class="line-number">
 				Line <span id="value">1</span>,
@@ -144,7 +134,7 @@ $username = $_SESSION['user_name'];
 				<span id="value">Plain Text</span>
 			</span>
 		</div>
-	</div>
+	</section>
 </footer>
 <script type="text/template" id="template_tab">
 <div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">clear</i></div></div>
@@ -156,10 +146,10 @@ $username = $_SESSION['user_name'];
 <li class="waves-effect waves-light" id="<%= id %>" onclick="<%= fn %>"><i class="material-icons"><%= icon %></i><span><%= content %></span></li>
 </script>
 <script type="text/template" id="template_file">
-<li class="btn-flat file-btn" file-index="" file-id="<%= id %>" type="<%= ext %>" mime="<%= mime %>"><a href="#"><i class="material-icons"><%= icon %></i><span id="file-name"><%= name %></span></a></li>
+<li class="btn-flat file-btn folder-closed <%= disabled %>" file-index="" file-id="<%= id %>" type="<%= ext %>" mime="<%= mime %>" icon="<%= icon %>"><a href="#"><i class="material-icons"><%= icon %></i><span id="file-name"><%= name %></span></a></li>
 </script>
 <script type="text/template" id="template_folder">
-<ul class="filemanager-sub" level="<%= level %>" folder-id="<%= id %>"></ul>
+<li class="filemanager-sub-box" folder-id="<%= id %>"><ul class="filemanager-sub" level="<%= level %>" folder-id="<%= id %>"></ul></li>
 </script>
 </body>
 
@@ -190,6 +180,7 @@ $username = $_SESSION['user_name'];
     <script src="js/cm-addon/fold/xml-fold.js"></script>
     <script src="js/cm-addon/fold/markdown-fold.js"></script>
     <script src="js/cm-addon/fold/comment-fold.js"></script>
+    <script src="js/cm-mode/meta.js"></script>
     <!--<script src="js/cm-addon/selection/active-line.js"></script>-->
     <!--<script src="js/cm-addon/hint/show-hint.js"></script>
     <script src="js/cm-addon/hint/anyword-hint.js"></script>
@@ -200,7 +191,7 @@ $username = $_SESSION['user_name'];
     <script src="js/cm-mode/css/css.js"></script>
     <script src="js/cm-mode/htmlmixed/htmlmixed.js"></script>
     <script src="js/cm-mode/clike/clike.js"></script>-->
-    <script src="js/cm-mode/javascript/javascript.js"></script>
+    <!--<script src="js/cm-mode/javascript/javascript.js"></script>-->
     <script>
     var res;
     $(document).ready(function() {
@@ -219,8 +210,8 @@ $username = $_SESSION['user_name'];
 	      closeOnClick: true
 	    });
 	    //var miniMapControl = new MiniMap();
-	    test.tabs();
-	    test.editors();
+	    //test.tabs();
+	    //test.editors();
     });
     </script>
 	

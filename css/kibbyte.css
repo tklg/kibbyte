@@ -151,6 +151,7 @@ footer .info .editor-info {
 }
 footer .info .editor-info span:not(#value) {
 	padding: 0 20px;
+	/*width: 300px;*/
 }
 .nav-left {
 	position: absolute;
@@ -166,22 +167,67 @@ footer .info .editor-info span:not(#value) {
     overflow-x: hidden;
     background: #263238;
 }
+.nav-left ul {
+	/*height: auto;*/
+	/*-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;*/
+}
 .nav-left li {
+	position: relative;
+	float: left;
 	padding: 0;
 	width: 100%;
 	text-align: left;
-	height: 24px;
+	/*height: 24px;*/
 	color: rgba(255,255,255,.6);
 	border-radius: 0;
+	cursor: pointer;
 }
-.nav-left li:hover:not(.file-active),
+.nav-left li.btn-flat {
+	height: 24px;
+}
+.nav-left li.filemanager-sub-box {
+	/*height: 0;*/
+	/*display: none;*/
+	white-space: nowrap;
+	overflow: hidden;
+	-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.nav-left li:hover:not(.file-active):not(.disabled),
 .nav-left li.selected {
 	/*background: #1DE96B;
 	color: #455A64;*/
 	/*background: rgba(255,255,255,.1);*/
 	background: transparent;
-	/*color: white;*/
+	color: white;
+	/*color: #1DE96B;*/
+}
+.nav-left li[icon="code"] i {
 	color: #1DE96B;
+}
+.nav-left li[icon="style"] i {
+	color: #66BB6A;
+}
+.nav-left li[icon="format_align_left"] i {
+	color: #1DE9B6;
+}
+.nav-left li[icon="image"] i {
+	color: #009688;
+}
+.nav-left li[icon="vertical_align_bottom"] i {
+	color: #689F38;
+}
+.nav-left li.disabled {
+	/*color: rgba(255,255,255,.3);*/
+	opacity: 0.37;
+	cursor: default;
+}
+.nav-left li.disabled:hover {
+	/*color: rgba(255,255,255,.3);*/
+	background: transparent;
+	opacity: 0.37;
+	cursor: default;
 }
 .nav-left li a {
 	padding: 0 12px;
@@ -197,20 +243,38 @@ footer .info .editor-info span:not(#value) {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	cursor: inherit;
 }
 .nav-left li a i {
 	height: 24px;
+	min-width: 20px;
 	vertical-align: middle;
 	/*margin-top: -5px;*/
 	margin-top: -3px;
 	margin-right: 6px;
 }
-/*do these with js*/
-.nav-filemanager .filemanager-sub[level="1"] {
-	text-indent: 8px;
+.nav-left li a i img {
+	height: 16px;
+	width: 16px;
+	margin: 0 2px 2px 2px;
+	animation-name: spin;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }
-.nav-filemanager .filemanager-sub[level="2"] {
-	text-indent: 16px;
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(359deg);}
+}
+.nav-filemanager .filemanager-sub {
+	padding-left: 24px;
+	/*min-height: 0;
+	white-space: nowrap;
+	overflow: hidden;*/
+	/*height: 0;*/
+	/*position: relative;
+	-webkit-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;*/
 }
 .nav-filemanager .file-active {
 	background: rgba(255,255,255,.1);
@@ -285,7 +349,8 @@ footer .info .editor-info span:not(#value) {
 	/*box-shadow: 2px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 10px 0 rgba(0,0,0,0.12);*/
 }
 .editor-tabs .tab {
-	cursor: default;
+	/*cursor: default;*/
+	cursor: pointer;
 	height: 30px;
 	line-height: 30px;
 	vertical-align: middle;
