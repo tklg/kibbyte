@@ -38,6 +38,10 @@ var btnStatus = {
 	scrollingTabs: false
 }
 var menu;
+marked.setOptions({
+	gfm: true,
+	breaks: true
+});
 
 $('a[data-toggle]').on('click', function() {
 	if ($(this).attr('data-toggle') == 'file-bar') {
@@ -301,7 +305,17 @@ function Editor(id, fileId) {
 		this.scrollPos = editor.getScrollInfo();
 	}
 	this.save = function() {
-		console.log(this.value);
+		$('#'+active_tab+'.tab .editor-tab-status').html('<img src="img/spinner.svg" height="16px" width="16px">');
+		$.post('query.php',
+		{
+			set_file_contents: this.fileId,
+			content: this.value
+		},
+		function(result) {
+			console.log(result);
+			tabs_list[active_tab].saved = true;
+    		$('#'+active_tab+'.tab .editor-tab-status').text('clear');
+		});
 	}
 	this.create();
 	this.setActive();
@@ -388,8 +402,6 @@ var editors = {
     			"Ctrl-S": function(instance) {
     				editors.recordCurrentValue();
     				editors_list[active_tab].save();
-    				tabs_list[active_tab].saved = true;
-    				$('#'+active_tab+'.tab .editor-tab-status').text('clear');
     			}
     		}
 		});
@@ -404,6 +416,14 @@ var editors = {
 		editor.on('change', function(instance, object) {
 			//miniMapControl.mirrorContent();
 			//instance.showHint({hint: CodeMirror.hint.anyword});
+			if (editors_list[active_tab] != null) {
+				if (editors_list[active_tab].language == 'markdown') {
+					preview.update('markdown');
+				}
+				/*if (editors_list[active_tab].language == 'html') {
+					preview.update('html');
+				}*/
+			}
 		});
 		editor.on('keydown', function(instance, event) {
 			//editor.showHint(instance);
@@ -415,19 +435,6 @@ var editors = {
 			$('.info .line-number #value').text(object.line + 1);
 			$('.info .column-number #value').text(object.ch + 1);
 		});
-		/*if (mode != null && mode != '') {
-			//d.info("Loading mode: " + mode);
-			$.getScript('js/cm-mode/'+mode+'/'+mode+'.js', function() {
-				if (mime != null && mime != '') {
-					//d.info("Setting mode to " + mime + '<br>js/cm-mode/'+mode+'/'+mode+'.js');
-					editor.setOption("mode", mime);
-				} else {
-					//d.info("Setting mode to " + mode + '<br>js/cm-mode/'+mode+'/'+mode+'.js');
-					editor.setOption("mode", mode);
-				}
-		   		//d.info("Initialized CodeMirror");
-			});
-		}*/
 	},
 	setLanguage: function(language) {
 		//maybe detect language from filename
@@ -460,6 +467,16 @@ var editors = {
 			editor.setOption("mode", language);
 			console.log('set language to ' + language);
 		}
+		if (language.includes('markdown') || language.includes('html')) {
+			preview.update(language.toLowerCase());
+			if (!livePreviewIsOpen) {
+				$('a[data-toggle="live-preview"]').click();
+			}
+		} else {
+			if (livePreviewIsOpen) {
+				$('a[data-toggle="live-preview"]').click();
+			}
+		}
 	},
 	setValue: function(data, mime) {
 		editor.setValue(data);
@@ -488,7 +505,14 @@ var editors = {
 	}
 }
 var preview = {
-	width: (fileBarIsOpen) ? (winWidth - fileBar.width) / 2 : winWidth / 2
+	width: (fileBarIsOpen) ? (winWidth - fileBar.width) / 2 : winWidth / 2,
+	update: function(language) {
+		if (language == 'markdown') {
+			$('.live-preview-paper').html(marked(editor.getValue()));
+		}/* else if (language == 'html') {
+			$('.live-preview-paper').html(editor.getValue());
+		}*/
+	}
 }
 /*var Tree = function(id) {
 	this.root = id;

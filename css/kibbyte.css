@@ -45,6 +45,9 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+string {
+	font-weight: bold !important;
+}
 header {
 	position: relative;
 	margin: 0;
@@ -399,6 +402,12 @@ footer .info .editor-info span:not(#value) {
 	border-radius: 50%;
 	color: rgba(255,255,255,.6);
 }
+.editor-tabs .tab .btn-close i img {
+	animation-name: spin;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
 .editor-tabs .tab .btn-close:hover {
 	background: #1DE96B;
 	color: #263238 !important;
@@ -534,6 +543,29 @@ footer .info .editor-info span:not(#value) {
 }
 .live-preview-paper blockquote {
 	border-left: 5px #1DE96B solid;
+}
+.live-preview-paper pre {
+	background: rgba(0,0,0,.1);
+	border: 1px solid black;
+}
+.live-preview-paper ul,
+.live-preview-paper ol,
+.live-preview-paper li {
+	list-style-type: circle;
+	padding-left: 15px;
+}
+.live-preview-paper table {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+}
+.live-preview-paper td {
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+}
+.live-preview-paper th {
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	background: rgba(0,0,0,.1);
 }
 .live-preview-warning {
 	font-family: "Hack", monospace;

@@ -163,6 +163,7 @@ $username = $_SESSION['user_name'];
     <script src="js/codemirror.js"></script>
     <!--<script src="js/minimap.js"></script>-->
     <script src="js/offline.min.js"></script>
+    <script src="js/marked.min.js"></script>
     <script src="js/kibbyte.js"></script>
     <link rel="stylesheet" href="css/cm-themes/kibbyte-mint.css">
     <script src="js/cm-keymap/sublime.js"></script>
@@ -187,11 +188,6 @@ $username = $_SESSION['user_name'];
     <link href="js/cm-addon/hint/show-hint.css" rel="stylesheet" />-->
     <!--<script src="js/cm-addon/merge/merge.js"></script>
     <link href="js/cm-addon/merge/merge.css" rel="stylesheet" />-->
-    <!--<script src="js/cm-mode/xml/xml.js"></script>
-    <script src="js/cm-mode/css/css.js"></script>
-    <script src="js/cm-mode/htmlmixed/htmlmixed.js"></script>
-    <script src="js/cm-mode/clike/clike.js"></script>-->
-    <!--<script src="js/cm-mode/javascript/javascript.js"></script>-->
     <script>
     var res;
     $(document).ready(function() {

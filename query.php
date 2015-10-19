@@ -49,6 +49,36 @@ function downloadFile($id) {
         return null;
     }
 }
+function updateFileContent($fileId, $newContent) {
+    checkToken();
+    $service = getDriveService();
+    try {
+        // First retrieve the file from the API.
+        $file = $service->files->get($fileId);
+
+        // File's new metadata.
+        //$file->setTitle($newTitle);
+        //$file->setDescription($newDescription);
+        //$file->setMimeType($newMimeType);
+
+        // File's new content.
+        $data = $newContent;
+
+        $additionalParams = array(
+            //'newRevision' => $newRevision,
+            //'mimeType' => $newMimeType,
+            'data' => $data,
+            'uploadType' => 'media'
+        );
+
+        // Send the request to the API.
+        $updatedFile = $service->files->update($fileId, $file, $additionalParams);
+        //return $updatedFile;
+        print 'saved ' . $fileId;
+    } catch (Exception $e) {
+        print "An error occurred: " . $e->getMessage();
+    }
+}
 function getFilesInFolder($folder) {
     checkToken();
     $params = array(
@@ -74,3 +104,9 @@ if (isset($_POST['get_folder_contents'])) {
 if (isset($_POST['get_file_contents'])) {
     echo downloadFile($_POST['get_file_contents']);
 }
+if (isset($_POST['set_file_contents'])) {
+    updateFileContent($_POST['set_file_contents'], $_POST['content']);
+}
+/*if (isset($_GET['set_file_contents'])) {
+    updateFileContent($_GET['set_file_contents'], $_GET['content']);
+}*/
