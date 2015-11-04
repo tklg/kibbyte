@@ -38,6 +38,10 @@ var btnStatus = {
 	scrollingTabs: false
 }
 var menu;
+var menuRibbonIsActive = false;
+var tabSize = 4;
+var useTabs = true;
+
 marked.setOptions({
 	gfm: true,
 	breaks: true
@@ -45,20 +49,10 @@ marked.setOptions({
 
 $('a[data-toggle]').on('click', function() {
 	if ($(this).attr('data-toggle') == 'file-bar') {
-		if (fileBarIsOpen) {
-			fileBar.close();
-		} else {
-			fileBar.open();
-		}
-		fileBarIsOpen = !fileBarIsOpen;
+		fileBar.toggle();
 	}
 	if ($(this).attr('data-toggle') == 'live-preview') {
-		if (livePreviewIsOpen) {
-			editors.hidePreview();
-		} else {
-			editors.showPreview();
-		}
-		livePreviewIsOpen = !livePreviewIsOpen;
+		preview.toggle();
 	}
 });
 Offline.on('confirmed-down', function () {
@@ -129,6 +123,14 @@ var init = {
 }
 var fileBar = {
 	width: 240,
+	toggle: function() {
+		if (fileBarIsOpen) {
+			fileBar.close();
+		} else {
+			fileBar.open();
+		}
+		fileBarIsOpen = !fileBarIsOpen;
+	},
 	open: function() {
 		$('.nav-filemanager').css({
 			'left': 0
@@ -287,7 +289,13 @@ function Editor(id, fileId) {
 		editor.scrollTo(this.scrollPos.left, this.scrollPos.top);
 		editor.setOption("mode", this.language);
 		console.log('set language to ' + this.language);
-		$('.editor-language #value').html(this.languageName);
+		if (this.languageName == 'Unknown') {
+			var dot = this.fileName.lastIndexOf(".");
+    		var ext = dot > -1 && this.fileName.substring(dot + 1, this.fileName.length);
+    		$('.editor-language #value').html('.'+ext);
+		} else {
+			$('.editor-language #value').html(this.languageName);
+		}
 	}
 	this.create = function() {
 		tab_amt++;
@@ -391,8 +399,8 @@ var editors = {
 			lineWrapping: false,
 			theme: 'kibbyte-mint',
 			indentUnit: 4,
-			indentWithTabs: true,
-			tabSize: 4,
+			indentWithTabs: useTabs,
+			tabSize: tabSize,
 			readOnly: false,
 			keyMap: 'sublime',
 		    foldGutter: true,
@@ -425,16 +433,32 @@ var editors = {
 				}*/
 			}
 		});
-		editor.on('keydown', function(instance, event) {
+		editor.on('keydown', function(instance, e) {
 			//editor.showHint(instance);
-			tabs_list[active_tab].saved = false;
-			$('#'+active_tab+'.tab .editor-tab-status').text('save');
+			switch (e.which) {
+				case 16: //shift
+				case 17: //ctrl
+				case 18: //alt
+				case 27: //esc
+				case 20: //caps
+				case 112:case 113:case 114:case 115:case 116:case 117:case 118:case 119:case 120:case 121:case 122:case 123: //f1 - f12
+				case 37:case 38:case 39: case 40: //arrow keys
+					//only do the thing below if the key is not one that does nothing
+					break;
+				default:
+					tabs_list[active_tab].saved = false;
+					$('#'+active_tab+'.tab .editor-tab-status').text('save');
+					break;
+			}
 		});
 		editor.on('cursorActivity', function(instance) {
 			var object = instance.getCursor();
 			$('.info .line-number #value').text(object.line + 1);
 			$('.info .column-number #value').text(object.ch + 1);
 		});
+
+		$('.editor-language #value').html('Plain Text');
+		$('.tab-size #value').html(tabSize);
 	},
 	setLanguage: function(language) {
 		//maybe detect language from filename
@@ -467,7 +491,7 @@ var editors = {
 			editor.setOption("mode", language);
 			console.log('set language to ' + language);
 		}
-		if (language.includes('markdown') || language.includes('html')) {
+		if (language.includes('markdown')/* || language.includes('html')*/) {
 			preview.update(language.toLowerCase());
 			if (!livePreviewIsOpen) {
 				$('a[data-toggle="live-preview"]').click();
@@ -483,7 +507,13 @@ var editors = {
 		this.recordCurrentValue();
 		editors_list[active_tab].setLanguage(CodeMirror.findModeByMIME(mime));
 		this.setLanguage(editors_list[active_tab].language);
-		$('.editor-language #value').html(editors_list[active_tab].languageName);
+		if (editors_list[active_tab].languageName == 'Unknown') {
+			var dot = editors_list[active_tab].fileName.lastIndexOf(".");
+    		var ext = dot > -1 && editors_list[active_tab].fileName.substring(dot + 1, editors_list[active_tab].fileName.length);
+    		$('.editor-language #value').html('.'+ext);
+		} else {
+			$('.editor-language #value').html(editors_list[active_tab].languageName);
+		}
 	},
 	reassignIds: function() {
 
@@ -512,6 +542,14 @@ var preview = {
 		}/* else if (language == 'html') {
 			$('.live-preview-paper').html(editor.getValue());
 		}*/
+	},
+	toggle: function() {
+		if (livePreviewIsOpen) {
+			editors.hidePreview();
+		} else {
+			editors.showPreview();
+		}
+		livePreviewIsOpen = !livePreviewIsOpen;
 	}
 }
 /*var Tree = function(id) {
@@ -578,7 +616,12 @@ var files = {
 				disabled: (!json[i].mimeType.includes('vnd.google-apps.folder') 
 							&& json[i].mimeType.includes('google-apps')
 							|| json[i].mimeType.includes('jpeg')
-							|| json[i].mimeType.includes('png'))
+							|| json[i].mimeType.includes('png')
+							|| json[i].mimeType.includes('gif')
+							|| json[i].mimeType.includes('webm')
+							|| json[i].mimeType.includes('swf')
+							|| json[i].mimeType.includes('mp3')
+							|| json[i].mimeType.includes('mp4')) //use regex eventually
 							? 'disabled'
 							: ''
 			}
@@ -634,7 +677,7 @@ var files = {
 			$('li[file-id='+id+']').addClass('loaded');
 			
 			var ind = $(elem).attr('file-index');
-			if (ind == '' || ind == null) ind = active_tab + 1;
+			if (ind == '' || ind == null) ind = tabs_list.length;
 			editors.recordCurrentValue();
 			//console.log('set active to ' + ind);
 			var name = $(elem).find('#file-name').text();
@@ -689,7 +732,7 @@ function Menu(x, y) {
 	this.width = 200;
 	this.itemsCount = 0;
 	this.create = function() {
-		this.destroy();
+		if (menu != null) menu.destroy();
 		var menuTemplate = _.template($('#contextmenu').html());
 		$('body').append(menuTemplate());
 		$('.clickmenu').css({
@@ -699,6 +742,7 @@ function Menu(x, y) {
 	}
 	this.destroy = function() {
 		$('.clickmenu').remove();
+		menu = null;
 	}
 	this.append = function(item) {
 		$('.clickmenu ul').append(item);
@@ -843,34 +887,45 @@ $(window).bind('mousewheel DOMMouseScroll', function(e){
 $(document).on("contextmenu", function(e) {
 	if (!btnStatus.shift) {
 		console.log($(e.target).attr('class'));
-		e.preventDefault();
+		//e.preventDefault();
 		if (!btnStatus.scrollingTabs) {
-			if ($(e.target).hasClass('cm-string') || $(e.target).hasClass('CodeMirror-scroll') || $(e.target).parents('.CodeMirror-lines').length) {
+			/*if ($(e.target).hasClass('cm-string') || $(e.target).hasClass('CodeMirror-scroll') || $(e.target).parents('.CodeMirror-lines').length) {
 				//clicked on editor
 				//e.preventDefault();
 				menu = new Menu(e.pageX, e.pageY);
-				menu.append(new MenuItem(menu, "Copy", "content_copy", "fn1").get());
-				menu.append(new MenuItem(menu, "Cut", "content_cut", "fn2").get());
-				menu.append(new MenuItem(menu, "Paste", "content_paste", "fn2").get());
+				menu.append(new MenuItem(menu, "Copy", "content_copy", "document.execCommand('copy')").get());
+				menu.append(new MenuItem(menu, "Cut", "content_cut", "document.execCommand('cut')").get());
+				menu.append(new MenuItem(menu, "Paste", "content_paste", "document.execCommand('paste')").get());
 				menu.appendDivider();
 				menu.append(new MenuItem(menu, "Select All", "add_circle_outline", "fn3").get());
+			} else */
+			if ($(e.target).attr('id') == 'file-list') {
+				e.preventDefault();
+				console.log('fileid: ' + 'root');
+				menu = new Menu(e.pageX, e.pageY);
+				menu.append(new MenuItem(menu, "New File", "insert_drive_file", "fn2").get());
+				menu.append(new MenuItem(menu, "New Folder", "folder", "fn2").get());
 			} else if ($(e.target).parents('.file-btn').length
 					|| $(e.target).hasClass('file-btn')) {
 				//clicked on file bar
-				//e.preventDefault();
+				e.preventDefault();
 				id = $(e.target).parents('.file-btn').attr('file-id') || $(e.target).attr('file-id');
 				console.log('fileid: ' + id);
 				menu = new Menu(e.pageX, e.pageY);
+				if ($(e.target).parents('.file-btn').attr('type') == 'folder' || $(e.target).attr('type') == 'folder') {
+					menu.append(new MenuItem(menu, "New File", "insert_drive_file", "fn2").get());
+					menu.append(new MenuItem(menu, "New Folder", "folder", "fn2").get());
+				}
+				menu.append(new MenuItem(menu, "Rename", "autorenew", "fn3").get());
 				menu.append(new MenuItem(menu, "Delete", "delete", "fn1").get());
-				menu.append(new MenuItem(menu, "Rename", "create", "fn2").get());
-				menu.append(new MenuItem(menu, "Move", "content_cut", "fn2").get());
+				//menu.append(new MenuItem(menu, "Move", "content_cut", "fn2").get());
 				menu.appendDivider();
 				menu.append(new MenuItem(menu, "Share", "send", "fn3").get());
 				menu.append(new MenuItem(menu, "Download", "file_download", "fn4").get());
 			} else if ($(e.target).parents('.tab').length
 					|| $(e.target).hasClass('tab')) {
 				//clicked on tab
-				//e.preventDefault();
+				e.preventDefault();
 				id = $(e.target).parents('.tab').attr('id') || $(e.target).attr('id');
 				console.log('fileid: ' + id);
 				menu = new Menu(e.pageX, e.pageY);
@@ -880,11 +935,86 @@ $(document).on("contextmenu", function(e) {
 				menu.append(new MenuItem(menu, "New File", "insert_drive_file", "fn3").get());
 				menu.append(new MenuItem(menu, "Open File", "create", "fn4").get());
 			}
+		} else {
+			e.preventDefault();
 		}
 	}
 });
+$('.editor-ribbon li').on('mouseup', function(e) {
+	if (e.which == 1) {
+		menuRibbonIsActive = true;
+		var id = $(this).attr('id').split("_")[1];
+		ribbonMenu(this, id);
+	}
+});
+$('.editor-ribbon li').on('mouseover', function(e) {
+	if (menuRibbonIsActive) {
+		var id = $(this).attr('id').split("_")[1];
+		ribbonMenu(this, id);
+	}
+});
+function ribbonMenu(elem, id) {
+	menu = new Menu($(elem).offset().left, ($(elem).offset().top - $(window).scrollTop()) + parseInt($(elem).css('height')));
+	switch(id) {
+		case 'file':
+			menu.append(new MenuItem(menu, "New File", "insert_drive_file", "fn2").get());
+			menu.append(new MenuItem(menu, "Open File", "create", "fn4").get());
+			menu.append(new MenuItem(menu, "Save", "save", "editors.recordCurrentValue();editors_list[active_tab].save();").get());
+			menu.append(new MenuItem(menu, "Save As", "bla", "fn6").get());
+			menu.append(new MenuItem(menu, "Save All", "bla", "fn5").get());
+			menu.appendDivider();
+			menu.append(new MenuItem(menu, "Rename", "autorenew", "fn5").get());
+			//menu.append(new MenuItem(menu, "Move to Folder", "folder", "fn7").get());
+			menu.append(new MenuItem(menu, "Move to Trash", "delete", "fn8").get());
+			menu.appendDivider();
+			menu.append(new MenuItem(menu, "Share", "share", "fn1").get());
+			menu.append(new MenuItem(menu, "Download", "file_download", "fn4").get());
+			break;
+		case 'edit':
+			menu.append(new MenuItem(menu, "Copy", "content_copy", "fn1").get());
+			menu.append(new MenuItem(menu, "Cut", "content_cut", "fn2").get());
+			menu.append(new MenuItem(menu, "Paste", "content_paste", "fn4").get());
+			menu.appendDivider();
+			menu.append(new MenuItem(menu, "Undo", "undo", "fn5").get());
+			menu.append(new MenuItem(menu, "Redo", "redo", "fn6").get());
+			break;
+		case 'view':
+			menu.append(new MenuItem(menu, "Side Bar", "menu", "fileBar.toggle()").get());
+			menu.append(new MenuItem(menu, "Preview", "remove_red_eye", "preview.toggle()").get());
+			menu.append(new MenuItem(menu, "Fullscreen", "fullscreen", "fn2").get());
+			menu.appendDivider();
+			menu.append(new MenuItem(menu, "Word Wrap", "wrap_text", "fn5").get());
+			menu.append(new MenuItem(menu, "Syntax", "text_format", "fn6").get());
+			menu.append(new MenuItem(menu, "Indentation", "format_indent_increase", "fn6").get());
+			break;
+		case 'insert':
+
+			break;
+		case 'tools':
+
+			break;
+		case 'help':
+			menu.append(new MenuItem(menu, "Kibbyte Help", "help_outline", "fn2").get());
+			menu.append(new MenuItem(menu, "Report a Problem", "error_outline", "fn1").get());
+			menu.appendDivider();
+			menu.append(new MenuItem(menu, "Keyboard Shortcuts", "keyboard", "fn4").get());
+			break;
+	}
+}
+function listTabs() {
+	//loop through tabs_list and build menu
+	menu = new Menu(e.pageX, e.pageY);
+	menu.append(new MenuItem(menu, "Close", "remove", "fn1").get());
+}
 $(document).on('mousedown', function(e) {
-	if (menu!=null) menu.destroy();
+	if (e.which != 3) {
+		if (menu != null) {
+			setTimeout(function() {
+				menu.destroy();
+				menuRibbonIsActive = false;
+			},100)
+		}
+	}
 });
 var test = {
 	tabs: function() {

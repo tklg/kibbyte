@@ -35,9 +35,9 @@ $username = $_SESSION['user_name'];
     <title>Kibbyte</title>
 	<link async href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link async href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
-	<link async rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.013/css/hack.min.css">
 	<link async rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
 	<link async rel="stylesheet" href="css/codemirror.css">
+    <link async href="js/cm-addon/dialog/dialog.css" rel="stylesheet" />
 	<link async rel="stylesheet" href="css/kibbyte.css">
 	<link rel="icon" type="image/ico" href="favicon.ico">
 		
@@ -61,8 +61,8 @@ $username = $_SESSION['user_name'];
 		    <li class="btn-flat" id="menu_file">File</li>
 		    <li class="btn-flat" id="menu_edit">Edit</li>
 		    <li class="btn-flat" id="menu_view">View</li>
-		    <li class="btn-flat" id="menu_insert">Insert</li>
-		    <li class="btn-flat" id="menu_tools">Tools</li>
+		    <!-- <li class="btn-flat" id="menu_insert">Insert</li> -->
+		    <!-- <li class="btn-flat" id="menu_tools">Tools</li> -->
 		    <li class="btn-flat" id="menu_help">Help</li>
 	    </ul>
 	</section>
@@ -80,27 +80,32 @@ $username = $_SESSION['user_name'];
 		    <!-- <li class="btn-flat file-btn" file-index="" file-id="reh"><a href="#"><i class="material-icons"><img src="img/spinner.svg" height="16px" width="16px"></i><span id="file-name">bar</span></a></li> -->
 	    </ul>
   	</nav>
-  	<ul id="account-bar" class="side-nav nav-right z-depth-2">
-		<li class="btn btn-flat btn-account-menu btn-account-menu-img waves-effect waves-circle waves-light"><img src="<?php echo $userphoto ?>" /></li>
-	    <a href="#"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">info_outline</i></li></a>
-		<a href="#"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">settings</i></li></a>
-		<a href="oauth.php?logout" title="logout"><li class="btn btn-flat btn-account-menu waves-effect waves-circle waves-light"><i class="material-icons">power_settings_new</i></li></a>
-	</ul>
+  	<nav id="account-bar" class="side-nav nav-right z-depth-2">
+	  	<ul>
+			<li class="btn-account-menu btn-account-menu-img"><img src="<?php echo $userphoto ?>" /><?php echo $username; ?></li>
+			<hr>
+		    <a href="#"><li class="btn-account-menu waves-effect waves-light"><i class="material-icons">info_outline</i>About Kibbyte</li></a>
+			<a href="#"><li class="btn-account-menu waves-effect waves-light"><i class="material-icons">settings</i>User Settings</li></a>
+			<a href="oauth.php?logout" title="logout"><li class="btn-account-menu waves-effect waves-light"><i class="material-icons">power_settings_new</i>Sign Out</li></a>
+		</ul>
+	</nav>
 	<section class="content-main">
-		<section class="editor-tabs noselect">
+		<nav class="editor-tabs noselect">
 			<section class="editor-tabs-container">
 				<!-- <div class="tab tab-active">CodeMirror.js<div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status" saved="false">save</i></div></div>-->
 			</section>
-			<div class="tab tab-action right"><a data-toggle="live-preview" class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">visibility</i></a></div>
-			<div class="tab tab-action right" onclick="listTabs()"><a class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">menu</i></a></div>
-		</section>
+			<section class="editor-tabs-ext">
+				<button class="tab tab-action tab-ext"><a data-toggle="live-preview" class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">visibility</i></a></button>
+				<button class="tab tab-action tab-ext" onclick="listTabs()"><a class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">menu</i></a></button>
+			</section>
+		</nav>
 		<section class="editors">
 			<textarea class="editor" id="editor-1"></textarea>
 		</section>
 		<section class="live-preview">
 			<div class="live-preview-scroller">
 				<div class="live-preview-paper z-depth-2">
-					<blockquote>The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.The <i>quick</i> <b>brown</b> <u>fox</u> jumps over the lazy dog.</blockquote>
+					Open a markdown file to preview it here
 				</div>
 			</div>
 			<div class="live-preview-warning z-depth-2">
@@ -137,7 +142,7 @@ $username = $_SESSION['user_name'];
 	</section>
 </footer>
 <script type="text/template" id="template_tab">
-<div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><div class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">clear</i></div></div>
+<div class="tab" id="<%= tabId %>"><span class="filename"><%= tabName %></span><button class="btn-flat btn-close right waves-effect waves-circle waves-light"><i class="material-icons editor-tab-status">clear</i></button></div>
 </script>
 <script type="text/template" id="contextmenu">
 <section class="clickmenu z-depth-2"><ul></ul></section>
@@ -169,7 +174,6 @@ $username = $_SESSION['user_name'];
     <script src="js/cm-keymap/sublime.js"></script>
     <!-- load these in with js when needed -->
     <script src="js/cm-addon/dialog/dialog.js"></script>
-    <link href="js/cm-addon/dialog/dialog.css" rel="stylesheet" />
     <script src="js/cm-addon/search/searchcursor.js"></script>
     <script src="js/cm-addon/search/search.js"></script>
     <script src="js/cm-addon/edit/closebrackets.js"></script>
@@ -201,7 +205,7 @@ $username = $_SESSION['user_name'];
 	    	cursorcolor: "#1DE9B6"
 	    });*/
 	    $('.button-account-bar').sideNav({
-	      menuWidth: 64,
+	      menuWidth: 240,
 	      edge: 'right',
 	      closeOnClick: true
 	    });

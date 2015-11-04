@@ -22,7 +22,7 @@ body {
 	display: none;
 }
 ::-webkit-scrollbar {
-	width: 18px;
+	width: 14px;
 }
 ::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 8px rgba(0,0,0,0.7);
@@ -32,6 +32,9 @@ body {
 	background-color: #1DE96B;
 	/*border-radius: 9px;*/
 	/*outline: 1px solid #009688;*/
+}
+.CodeMirror-hscrollbar {
+	height: 14px;
 }
 ::selection {
 	color: #00796B;
@@ -170,10 +173,11 @@ footer .info .editor-info span:not(#value) {
     overflow-x: hidden;
     background: #263238;
 }
-.nav-left ul {
+.nav-left ul#file-list {
 	/*height: auto;*/
 	/*-webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;*/
+    height: 100%;
 }
 .nav-left li {
 	position: relative;
@@ -285,28 +289,51 @@ footer .info .editor-info span:not(#value) {
 }
 .nav-right {
 	background: #455A64;
+	padding-top: 8px;
 	/*z-index: 50;*/
 }
 .nav-right li {
-	padding: 2px 0 0 0;
+	padding: 0;
+}
+.nav-right hr {
+	border: 1px solid #668593;
 }
 .nav-right a {
 	padding: 0;
+	height: 40px;
+	line-height: 40px;
+}
+.btn img {
+	height: 100%;
+	width: 100%;
+	border: 1px solid #1DE96B;
+	border-radius: 50%;
 }
 .btn-account-menu {
-	background: transparent;
 	color: white;
+	width: 100%;
+	height: 40px;
+	margin: 0;
+	line-height: 40px;
+	vertical-align: middle;
+	border-radius: 0;
+}
+.btn-account-menu i,
+.btn-account-menu img {
+	background: transparent;
 	width: 40px;
 	height: 40px;
+	line-height: 40px;
 	border-radius: 50%;
 	text-align: center;
-	margin: 12px 12px 0 12px;
+	margin: 0 12px;
+	vertical-align: middle;
 }
 .btn-account-menu-img {
 	padding: 0 !important;
 	background: transparent !important;
 }
-.nav-right li:hover {
+.nav-right li:hover:not(.btn-account-menu-img) {
 	background: #1DE96B;
 	color: #455A64;
 }
@@ -345,11 +372,22 @@ footer .info .editor-info span:not(#value) {
 	top: 30px;
 	width: 100%;
 	z-index: 8;
-	white-space: nowrap;
-	overflow: hidden;
 	/*border-bottom: 1px solid #1DE96B;*/
 	/*z-index: 10;*/
 	/*box-shadow: 2px 5px 5px 0 rgba(0,0,0,0.16), 2px 5px 10px 0 rgba(0,0,0,0.12);*/
+}
+.editor-tabs-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	width: calc(100% - 60px);
+}
+.editor-tabs-ext {
+	float: right;
+	left: 10px;
+	width: 60px;
 }
 .editor-tabs .tab {
 	/*cursor: default;*/
@@ -358,7 +396,7 @@ footer .info .editor-info span:not(#value) {
 	line-height: 30px;
 	vertical-align: middle;
 	max-width: 180px;
-	min-width: 40px;
+	min-width: 107px;
 	width: 23%;
 	position: relative;
 	float: left;
@@ -386,6 +424,10 @@ footer .info .editor-info span:not(#value) {
 }
 .editor-tabs .tab-action .btn-close {
 	margin-left: 0;
+}
+.editor-tabs .tab-ext {
+	float: right;
+	min-width: 30px;
 }
 .editor-tabs .tab-active {
 	background: #1D2529;
@@ -471,10 +513,6 @@ footer .info .editor-info span:not(#value) {
 .btn-header-menu i {
 	font-size: 25px;
 }
-.btn img {
-	height: 100%;
-	width: 100%;
-}
 .input-field i {
 	height: 64px;
 	line-height: 64px;
@@ -504,6 +542,16 @@ footer .info .editor-info span:not(#value) {
 }
 .CodeMirror-scrollbar-filler {
 	background: #263238;
+}
+.CodeMirror-dialog {
+	background: #455A64;
+	color: rgba(255,255,255,.6);
+}
+.CodeMirror-dialog-top {
+	border-bottom: 1px solid #1DE96B;
+}
+.CodeMirror-dialog-bottom {
+	border-top: 1px solid #1DE96B;
 }
 .live-preview {
 	left: 100%;
@@ -541,12 +589,22 @@ footer .info .editor-info span:not(#value) {
 	white-space: normal;
 	font-family: serif;
 }
+.live-preview-paper b,
+.live-preview-paper strong {
+	font-weight: bold;
+}
 .live-preview-paper blockquote {
 	border-left: 5px #1DE96B solid;
+	font-weight: bold;
+	font-style: italic;
+	padding: 1px 20px;
+	font-size: 110%;
 }
 .live-preview-paper pre {
-	background: rgba(0,0,0,.1);
-	border: 1px solid black;
+	background: rgba(0,0,0,.03);
+	border: 1px solid #C1C1C1;
+	box-shadow: inset 0 0 15px #C0C0C0;
+	padding: 6px;
 }
 .live-preview-paper ul,
 .live-preview-paper ol,
@@ -605,7 +663,7 @@ footer .info .editor-info span:not(#value) {
 .clickmenu {
 	padding: 0;
 	width: 200px;
-	background: #263238;
+	background: #374951;
 	position: absolute;
 	top: 10px;
 	left: 10px;
